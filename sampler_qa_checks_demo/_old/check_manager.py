@@ -1,5 +1,4 @@
 import HilltopHost
-from .config_loader import load_config
 from .repository import Repository
 from .utils import dump_object
 from .checks.range_check import RangeCheck
@@ -7,7 +6,7 @@ from .checks.percentile_check import PercentileCheck
 from .checks.extrema_check import ExtremaCheck
 
 class CheckManager:
-    def __init__(self, config_path, check=None):
+    def __init__(self, config, check=None):
         self.config = load_config(config_path)
         self.check = check
 

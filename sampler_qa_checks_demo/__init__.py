@@ -1,24 +1,48 @@
 import os
-import HilltopHost 
-from .check_manager import CheckManager
-from .utils import dump_object
+import HilltopHost
+from .config_loader import load_config
+from .check_factory import CheckFactory
+from . import utils
 
 class SamplerQAChecksPluginDemo:
+
+    def load_config(self):
+        config_section = HilltopHost.System.GetConfigSection("sampler_qa_checks_demo")
+        if not config_section:
+            raise ValueError("sampler_qa_checks_demo configuration section not found")
+        config_file_path = config_section.get("ConfigFilePath")
+        if config_file_path is None:
+            raise ValueError("ConfigFilePath configuration item not found")
+        if not os.path.exists(config_file_path):
+            raise FileNotFoundError(f"configuration file not found: {config_file_path}")
+        config = load_config(config_file_path)
+        return config
 
     def sampler_qa_checks(self, payload):
         HilltopHost.LogInfo(f"sampler_qa_checks_demo - checks started")
         try:
-            package_dir = os.path.dirname(__file__)
-            config_file_path = os.path.join(package_dir, 'config.example.yaml')
-            # check_manager = CheckManager(config_file_path, "range")
-            i=0
+            config = self.load_config()
+            HilltopHost.LogInfo(f"sampler_qa_checks_demo - config file loaded")
+            factory = CheckFactory(config)
+            run_checks = factory.create_run_checks()
+            for run in payload.Runs:
+                HilltopHost.LogInfo(f"sampler_qa_checks_demo - checking run {run.RunName} ({run.RunID})")
+                # HilltopHost.LogInfo(str(utils.dump_object(run)))
+                for run_check in run_checks:
+                    qa_checks = run_check.perform_checks(run)
+                    for qa_check in qa_checks:
+                        HilltopHost.Sampler.SaveQACheck(qa_check)
+                break
+            # check_manager = CheckManager(config, "range")
             # for test in payload.LabTestResults:
             #     result_value = test.ResultValue if test.ResultValue else test.Result
             #     check_manager.perform_checks(sample_id=test.SampleID, lab_test_id=test.LabTestID, value=result_value)
             #     i+=1
+            HilltopHost.LogInfo(
+                f"sampler_qa_checks_demo - checks finished"
+            )
         except Exception as e:
             HilltopHost.LogError(f"sampler_qa_checks_demo - error occurred: {str(e)}")
-        HilltopHost.LogInfo(f"sampler_qa_checks_demo - checks finished on {i} results")
 
     # def sampler_qa_checks(self, payload):
     #     with open('Sampler_Qa_Checks_Payload_actual.txt', 'w') as file:
@@ -54,7 +78,7 @@ class SamplerQAChecksPluginDemo:
     #                         if type(subTest.Result) is not type(None):
     #                             file.write("SubTest TestResult ====================\n")
     #                             file.write(f"{self.dump_object(test.Result)}\n")
-                        
+
     #                     if not test.IsTestSet:
     #                         HilltopHost.Sampler.SaveQACheck(check)
 
