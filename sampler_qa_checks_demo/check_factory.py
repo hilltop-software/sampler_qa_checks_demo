@@ -26,5 +26,8 @@ class CheckFactory:
         available_check_classes = CheckRegistry.get_checks_by_level(level)
         instantiated_checks = []
         for check_class in available_check_classes:
-            instantiated_checks.append(check_class(self.config))
+            # Get the class name to use as the key for the configuration block
+            class_name = check_class.__name__
+            class_config = self.config.get(class_name, {})
+            instantiated_checks.append(check_class(class_config))
         return instantiated_checks

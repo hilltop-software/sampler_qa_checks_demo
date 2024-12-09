@@ -1,28 +1,31 @@
+save_qachecks_to_database: false
+RunCheck:
+  name_max_length: 80
 measurements:
   pH:
     range:
-        critical: 5,9
-        warning: 6,8
+      critical: 5,9
+      warning: 6,8
     percentiles:
-        min_data_points: 20
-        period_years: 15
-        critical: 10,90
-        warning: 20,80
-        info: 30,70
+      min_data_points: 20
+      period_years: 15
+      critical: 10,90
+      warning: 20,80
+      info: 30,70
     extrema: {}
-  'Ammonia - Nitrogen':
+  "Ammonia - Nitrogen":
     range:
-        critical: 0.0015,2.082
-  'Water Temperature (Field)':
+      critical: 0.0015,2.082
+  "Water Temperature (Field)":
     extrema: {}
     range:
-        critical: 12,25
-  'Dissolved Reactive Phosphorus':
+      critical: 12,25
+  "Dissolved Reactive Phosphorus":
     range:
-        critical: 0.002,0.1
+      critical: 0.002,0.1
     percentiles:
-        min_data_points: 20
-        period_years: 15
-        critical: 10,90
-        warning: 20,80
-        info: 30,70
+      min_data_points: 20
+      period_years: 15
+      critical: 10,90
+      warning: 20,80
+      info: 30,70
