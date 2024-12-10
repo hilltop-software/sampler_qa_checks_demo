@@ -54,7 +54,6 @@ class SamplerQAChecksPluginDemo:
                                         run.RunID, subtest
                                     )
                                     self.save_qa_checks(qa_checks)
-                # break  # only process the first run for now
             HilltopHost.LogInfo(f"sampler_qa_checks_demo - checks finished")
         except Exception as e:
             HilltopHost.LogError(f"sampler_qa_checks_demo - error occurred: {str(e)}")

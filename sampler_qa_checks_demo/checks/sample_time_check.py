@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import HilltopHost
 from .i_check import ICheck
 from HilltopHost.Sampler import QACheck, QACheckSeverity
+from .. import utils
 
 class SampleTimeCheck(ICheck):
     """
@@ -15,6 +16,9 @@ class SampleTimeCheck(ICheck):
         HilltopHost.LogInfo(f"sampler_qa_checks_demo - SampleTimeCheck is using an age limit of {self.age_limit} days")        
     
     def perform_checks(self, run_id, context) -> List[QACheck]:
+        if self.has_check_result(context, "sample_check_time"):
+            return []
+
         # we're only checking samples that are old, yet still not complete
         if context.StatusID != HilltopHost.RunStatus.SOME_RESULTS_BACK:
             return []

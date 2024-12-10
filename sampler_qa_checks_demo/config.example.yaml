@@ -2,11 +2,11 @@ db_server: localhost # database server host name
 db_name: Hilltop # database name
 # uses trusted comnnection to connect to the database
 save_qachecks_to_database: false # save the QA checks to the database
-RunCheck: # simple run-level check that checks if the run name is too long
+RunNameCheck: # simple run-level check that checks if the run name is too long
   name_max_length: 80
 SampleTimeCheck: # simple sample-level check that the sample time is older than x days old yet all results aren't back yet
   age_limit: 3 # days
-RangeCheck: # test-level check that checks a result is within a certain range
+OutsideRangeCheck: # test-level check that checks a result is within a certain range
   "pH":
     critical: # specify a range that'll raise a critical severity 
       min: 5

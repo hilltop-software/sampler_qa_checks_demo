@@ -2,6 +2,7 @@ import HilltopHost
 from typing import List
 from .i_check import ICheck
 from HilltopHost.Sampler import QACheck, QACheckSeverity
+from .. import utils
 
 class RunNameCheck(ICheck):
     """
@@ -15,12 +16,13 @@ class RunNameCheck(ICheck):
     
 
     def perform_checks(self, run_id, context) -> List[QACheck]:
-        name_max_length = self.config.get('name_max_length')
-        if name_max_length and len(context.RunName) > name_max_length:
+        if self.has_check_result(context, "run_name_check"):
+            return []
+        if len(context.RunName) > self.name_max_length:
             qa_check = QACheck()
             qa_check.Title = "Run name is too long"
             qa_check.RunID = run_id
             qa_check.Severity = QACheckSeverity.Information
-            qa_check.Details = f"Run name '{context.RunName}' is {len(context.RunName)} characters long, which exceeds the maximum of {name_max_length}."
+            qa_check.Details = f"Run name '{context.RunName}' is {len(context.RunName)} characters long, which exceeds the maximum of {self.name_max_length}."
             qa_check.Label = "run_name_check"
             return [qa_check]

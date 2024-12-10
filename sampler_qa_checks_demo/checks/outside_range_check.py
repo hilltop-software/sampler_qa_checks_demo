@@ -14,6 +14,8 @@ class OutsideRangeCheck(ICheck):
     _measurement_cache = {}
 
     def perform_checks(self, run_id, context) -> List[QACheck]:
+        if self.has_check_result(context, "outside_range_check"):
+            return []
 
         if context.Result is None or context.Result.ResultValue is "":
             return []
