@@ -4,6 +4,9 @@ import HilltopHost
 
 
 class ConfigLoader:
+    """
+    A class that loads the YAML configuration file for the sampler_qa_checks_demo plugin.
+    """
 
     @staticmethod
     def load():

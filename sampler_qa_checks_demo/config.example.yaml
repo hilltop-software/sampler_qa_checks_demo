@@ -1,33 +1,28 @@
-db_server: localhost
-db_name: Hilltop
-save_qachecks_to_database: false
-RunCheck:
+db_server: localhost # database server host name
+db_name: Hilltop # database name
+# uses trusted comnnection to connect to the database
+save_qachecks_to_database: false # save the QA checks to the database
+RunCheck: # simple run-level check that checks if the run name is too long
   name_max_length: 80
-measurements:
-  pH:
-    range:
-      critical: 5,9
-      warning: 6,8
-    percentiles:
-      min_data_points: 20
-      period_years: 15
-      critical: 10,90
-      warning: 20,80
-      info: 30,70
-    extrema: {}
+SampleTimeCheck: # simple sample-level check that the sample time is older than x days old yet all results aren't back yet
+  age_limit: 3 # days
+RangeCheck: # test-level check that checks a result is within a certain range
+  "pH":
+    critical: # specify a range that'll raise a critical severity 
+      min: 5
+      max: 9
+    warning: # specify a range that'll raise a warning severity
+      min: 6
+      max: 8
   "Ammonia - Nitrogen":
-    range:
-      critical: 0.0015,2.082
-  "Water Temperature (Field)":
-    extrema: {}
-    range:
-      critical: 12,25
+    critical:
+      min: 0.0015
+      max: 2.082
   "Dissolved Reactive Phosphorus":
-    range:
-      critical: 0.002,0.1
-    percentiles:
-      min_data_points: 20
-      period_years: 15
-      critical: 10,90
-      warning: 20,80
-      info: 30,70
+    critical: 
+      min: 0.002
+      max: 0.1
+  "Water Temperature (Field)":
+    critical:
+      min: 12
+      max: 25

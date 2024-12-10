@@ -10,5 +10,5 @@ class ICheck:
         self.config = config
         self.connection = connection
         
-    def perform_checks(self, context) -> List[QACheck]:
+    def perform_checks(self, run_id, context) -> List[QACheck]:
         raise NotImplementedError("Must implement perform_check method.")

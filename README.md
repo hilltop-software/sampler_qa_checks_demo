@@ -108,6 +108,6 @@ To add a new check:
 
 The class will then be called and passed:
 
-* The appropriate run, sample, or test payload.
-* The matching configuration section from the YAML configuration file.
-* An active `pyodbc` database connection to the Hilltop database.
+* A run, sample, or test payload, depending on the registered check level.
+* The matching class configuration section from the YAML configuration file.
+* An active `pyodbc` database connection to the Hilltop database in case it's needed.
