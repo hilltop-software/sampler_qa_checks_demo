@@ -7,22 +7,10 @@ RunNameCheck: # simple run-level check that checks if the run name is too long
 SampleTimeCheck: # simple sample-level check that the sample time is older than x days old yet all results aren't back yet
   age_limit: 3 # days
 OutsideRangeCheck: # test-level check that checks a result is within a certain range
-  "pH":
-    critical: # specify a range that'll raise a critical severity 
+  "pH": # Hilltop measurement name
+    critical: # results outside this range will have a critical severity 
       min: 5
       max: 9
-    warning: # specify a range that'll raise a warning severity
+    warning: # results outside this range will have a warning severity
       min: 6
       max: 8
-  "Ammonia - Nitrogen":
-    critical:
-      min: 0.0015
-      max: 2.082
-  "Dissolved Reactive Phosphorus":
-    critical: 
-      min: 0.002
-      max: 0.1
-  "Water Temperature (Field)":
-    critical:
-      min: 12
-      max: 25
