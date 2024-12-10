@@ -9,8 +9,9 @@ class CheckFactory:
     The factory uses CheckRegistry to get all available checks for a level,
     then filters them by the names listed in the configuration.
     """
-    def __init__(self, config: dict):
+    def __init__(self, config: dict, connection):
         self.config = config
+        self.connection = connection
 
     def create_run_checks(self) -> List[ICheck]:
         return self._create_checks("run_checks")
@@ -29,5 +30,5 @@ class CheckFactory:
             # Get the class name to use as the key for the configuration block
             class_name = check_class.__name__
             class_config = self.config.get(class_name, {})
-            instantiated_checks.append(check_class(class_config))
+            instantiated_checks.append(check_class(class_config, self.connection))
         return instantiated_checks

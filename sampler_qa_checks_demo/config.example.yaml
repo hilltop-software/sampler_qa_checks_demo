@@ -1,3 +1,5 @@
+db_server: localhost
+db_name: Hilltop
 save_qachecks_to_database: false
 RunCheck:
   name_max_length: 80

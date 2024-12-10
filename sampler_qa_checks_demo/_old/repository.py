@@ -1,11 +1,25 @@
 import pyodbc
 import HilltopHost
-from .utils import dump_object
+from ..utils import dump_object
 
 class Repository:
-    def __init__(self, server, database, username, password):
-        self.connection_string = f'DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}'
-        self.connection = pyodbc.connect(self.connection_string)
+    """
+    Extracts data available via direct database access only.
+    """
+
+    def __init__(self, connection_string):
+        self.connection = pyodbc.connect(connection_string)
+        
+    def get_state(self):
+        try:
+            cursor = self.connection.cursor()
+            cursor.execute("SELECT @@version;")
+            result = cursor.fetchone()
+            cursor.close()
+            return result
+        except Exception as e:
+            HilltopHost.LogError(f"Error occurred: {str(e)}")
+            return None
 
     def get_sample_metadata_by_sample_and_lab_test_id(self, sample_id, lab_test_id):
         try:

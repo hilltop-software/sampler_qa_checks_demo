@@ -42,16 +42,38 @@ This will create both `tar.gz` and `whl` Python packages for installation. add `
 
 ## Configuration
 
-Create a YAML configuration following the example at `sampler_qa_checks_demo\config.example.yaml`.
+The plugin uses a YAML configuration following the example at `sampler_qa_checks_demo\config.example.yaml`.
 
-Add the path to this file as `ConfigFilePath` in your `HilltopSystem.dsn`:
+To configure the plugin, create a copy of this file and add the file path as `ConfigFile` in your `HilltopSystem.dsn`:
 
 ```ini
 [sampler_qa_checks_demo]
-ConfigFilePath=C:\Hilltop\Config\sampler_qa_checks_demo.yaml
+ConfigFile=C:\Hilltop\Config\sampler_qa_checks_demo.yaml
 ```
 
-The plugin will use this path to read the main configuration file. 
+The plugin will use this path to read the rest of the plugin configuration.
+
+### YAML configuration
+
+The YAML file is commented with descriptions of each configuration item. The structure has a global configuration section and then configuration sections named after each check that implements the `ICheck` interface. The name of the class and the name of the YAML section must match.
+
+For example, this is the configuration section for the `RunCheck` implementation:
+
+```yaml
+RunCheck:
+  name_max_length: 80
+```
+
+### Database connections
+
+A connection to the Hilltop metadata database is established using `pyodbc`. The server and database name can be set in the YAML config file:
+
+```yaml
+db_server: localhost
+db_name: Hilltop
+```
+
+The connection is established using `Trusted_Connection=yes;` so no username or password is included.
 
 ## Getting started
 
@@ -76,3 +98,16 @@ save_qachecks_to_database: true
 
 > **Warning**
 Adding this setting and using this plugin on production data for lab settings, lab tests and production runs may result in demonstration QA checks to be added to your production database. Be careful to use this plugin on demonstration or testing installations only.
+
+## Adding new checks
+
+To add a new check:
+
+1. Create a new class that implements the `ICheck` interface and put it in the `checks` folder.
+2. Add a reference to the check in `CheckRegistry` at `check_registry.py` and add the class name to the `run_checks`, `sample_checks`, or `test_checks` arrays.
+
+The class will then be called and passed:
+
+* The appropriate run, sample, or test payload.
+* The matching configuration section from the YAML configuration file.
+* An active `pyodbc` database connection to the Hilltop database.

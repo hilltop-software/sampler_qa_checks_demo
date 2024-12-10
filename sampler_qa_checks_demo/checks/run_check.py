@@ -13,7 +13,7 @@ class RunCheck(ICheck):
             qa_check = QACheck()
             qa_check.Title = "Run name is too long"
             qa_check.RunID = context.RunID
-            qa_check.Severity = QACheckSeverity.Warning
+            qa_check.Severity = QACheckSeverity.Information
             qa_check.Details = f"Run name '{context.RunName}' is {len(context.RunName)} characters long, which exceeds the maximum of {name_max_length}."
             qa_check.Label = "run_check_name_max_length"
             return [qa_check]
