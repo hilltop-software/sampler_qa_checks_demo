@@ -15,7 +15,6 @@ class SamplerQAChecksPluginDemo:
         try:
 
             self.config = ConfigLoader.load()
-            HilltopHost.LogInfo(f"sampler_qa_checks_demo - config file loaded")
 
             self.save = self.config.get("save_qachecks_to_database", False)
             if self.save:

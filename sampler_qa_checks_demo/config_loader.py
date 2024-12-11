@@ -9,7 +9,7 @@ class ConfigLoader:
     """
 
     @staticmethod
-    def load():
+    def load() -> dict:
         config_section = HilltopHost.System.GetConfigSection("sampler_qa_checks_demo")
         if not config_section:
             raise ValueError("sampler_qa_checks_demo configuration section not found")
@@ -21,4 +21,5 @@ class ConfigLoader:
 
         with open(config_file_path, "r") as file:
             config = yaml.safe_load(file)
+        HilltopHost.LogInfo(f"sampler_qa_checks_demo - using configuration file from {config_file_path}")
         return config

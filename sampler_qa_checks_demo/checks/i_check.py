@@ -13,7 +13,7 @@ class ICheck:
         self.connection = connection
         
     def perform_checks(self, run_id, context) -> List[QACheck]:
-        raise NotImplementedError("Must implement perform_check method.")
+        raise NotImplementedError("Must implement perform_checks method.")
     
     def has_check_result(self, context, label) -> bool:
         """

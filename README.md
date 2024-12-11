@@ -1,8 +1,13 @@
 # Sampler QA Checks Plugin Demonstration
 
-This repository provides demonstration code for runnign QA checks in Sampler as a Hilltop plugin. It requires a Hilltop Sampler installation.
+This repository provides demonstration code for running QA checks in Sampler as a Hilltop plugin. It requires a Hilltop Sampler installation.
 
 For more information, read the Hilltop guide for developing Hilltop plugins.
+
+> [!NOTE]
+> You do no have to implement your plugin following this architecture. All your plugin needs is an entry point that implements `sampler_qa_checks()` and use `HilltopHost.Sampler.SaveQACheck()` to save your QA checks to the database. Even saving QA checks is optional, you may chose to write a report somewhere instead, it's entirely up to you.
+>
+> For example, you may wish to save just a single `OK` QA check for the whole run, once all results are in and all checks pass.
 
 ## Hilltop Python package installation
 
@@ -48,14 +53,14 @@ To configure the plugin, create a copy of this file and add the file path as `Co
 
 ```ini
 [sampler_qa_checks_demo]
-ConfigFile=C:\Hilltop\Config\sampler_qa_checks_demo.yaml
+ConfigFile=C:\Hilltop\Plugins\sampler_qa_checks_demo.yaml
 ```
 
-The plugin will use this path to read the rest of the plugin configuration.
+The plugin will use this path to read the rest of the plugin configuration contained in the YAML file.
 
 ### YAML configuration
 
-The YAML file is commented with descriptions of each configuration item. The structure has a global configuration section and then configuration sections named after each check that implements the `ICheck` interface. The name of the class and the name of the YAML section must match.
+`config.example.yaml` is commented with descriptions of each configuration item. Their are top-level configurations required for the plugin then configuration sections named after each individual check that implements the `ICheck` interface. The name of the class and the name of the YAML section must match.
 
 For example, this is the configuration section for the `RunCheck` implementation:
 
@@ -73,7 +78,7 @@ db_server: localhost
 db_name: Hilltop
 ```
 
-The connection is established using `Trusted_Connection=yes;` so no username or password is included.
+The connection is established using `Trusted_Connection=yes;` so no username or password is included. You must configure the database to accept such connections or update the code to use a different method for authentication.
 
 ## Getting started
 
@@ -99,6 +104,48 @@ save_qachecks_to_database: true
 > **Warning**
 Adding this setting and using this plugin on production data for lab settings, lab tests and production runs may result in demonstration QA checks to be added to your production database. Be careful to use this plugin on demonstration or testing installations only.
 
+## Implemented checks
+
+### Run checks
+
+#### RunNameCheck
+
+This check will raise a QA check with severity `Information` against a run if the run name is longer than the specified limit. The limit is configured in the YAML config file. The default is 100.
+
+```yaml
+RunNameCheck:
+  name_max_length: 100
+```
+
+### Sample checks
+
+#### SampleTimeCheck
+
+This check will raise a QA check with severity `Warning` against a sample if the sample date is older than the specified limit and the sample still has status `SOME_RESULTS_BACK`. The limit is configured in the YAML config file. The default is 3 days.
+
+```yaml
+SampleTimeCheck:
+  age_limit: 3 # days
+```
+
+### Lab test checks
+
+#### OutsideRangeCheck
+
+This check will raise a QA check with either `Warning` or `Critical` severity against a lab test result if the result falls outside the specified range. You must specify the Hilltop measurement name for the lab test and provide either a `warning` range, `critical` range or both.
+
+```yaml
+OutsideRangeCheck:
+  "pH": # Hilltop measurement name
+    critical: 
+      min: 5
+      max: 9
+    warning:
+      min: 6
+      max: 8
+```
+
+
 ## Adding new checks
 
 To add a new check:
@@ -111,3 +158,12 @@ The class will then be called and passed:
 * A run, sample, or test payload, depending on the registered check level.
 * The matching class configuration section from the YAML configuration file.
 * An active `pyodbc` database connection to the Hilltop database in case it's needed.
+
+## Preventing duplicate checks by checking labels
+
+When you save a QACheck you must attach a label. Run, sample, or test objects provided in the payload include a `QAChecks` attribute containing previous checks saved against that object. By checking the labels in the `QAChecks` you can see if your check has already been saved, and skip creating it again. The `ICheck` interface provides a `has_check_result()` helper method to make this easier:
+
+```python
+if self.has_check_result(context, "outside_range_check"):
+    return []
+```
