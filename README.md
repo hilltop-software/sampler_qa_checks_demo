@@ -5,9 +5,9 @@ This repository provides demonstration code for running QA checks in Sampler as 
 For more information, read the Hilltop guide for developing Hilltop plugins.
 
 > [!NOTE]
-> You do no have to implement your plugin following this architecture. All your plugin needs is an entry point that implements `sampler_qa_checks()` and use `HilltopHost.Sampler.SaveQACheck()` to save your QA checks to the database. Even saving QA checks is optional, you may chose to write a report somewhere instead, it's entirely up to you.
->
-> For example, you may wish to save just a single `OK` QA check for the whole run, once all results are in and all checks pass.
+> You do no have to implement your plugin following this architecture. All your plugin must do is implement an entry point for `sampler_qa_checks()` and use `HilltopHost.Sampler.SaveQACheck()` to save your QA checks to the database.
+> 
+> Even saving QA checks is optional, you may chose to write a report and save it somewhere instead, or send a notification, it's entirely up to you. For example, you may wish to save just a single `OK` QA check for the whole run, once all results are in and all checks pass.
 
 ## Hilltop Python package installation
 
@@ -53,14 +53,14 @@ To configure the plugin, create a copy of this file and add the file path as `Co
 
 ```ini
 [sampler_qa_checks_demo]
-ConfigFile=C:\Hilltop\Plugins\sampler_qa_checks_demo.yaml
+ConfigFile=C:\Hilltop\Config\sampler_qa_checks_demo.yaml
 ```
 
 The plugin will use this path to read the rest of the plugin configuration contained in the YAML file.
 
 ### YAML configuration
 
-`config.example.yaml` is commented with descriptions of each configuration item. Their are top-level configurations required for the plugin then configuration sections named after each individual check that implements the `ICheck` interface. The name of the class and the name of the YAML section must match.
+`sampler_qa_checks_demo.example.yaml` is commented with descriptions of each configuration item. Their are top-level configurations required for the plugin then configuration sections named after each individual check that implements the `ICheck` interface. The name of the class and the name of the YAML section must match.
 
 For example, this is the configuration section for the `RunCheck` implementation:
 
