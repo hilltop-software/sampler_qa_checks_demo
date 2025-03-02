@@ -104,6 +104,16 @@ save_qachecks_to_database: true
 > **Warning**
 Adding this setting and using this plugin on production data for lab settings, lab tests and production runs may result in demonstration QA checks to be added to your production database. Be careful to use this plugin on demonstration or testing installations only.
 
+## Disabling checks
+
+Each check type can be disabled by setting `disabled: true`:
+
+```yaml
+MissingResultsCheck:
+  disabled: true
+  age_limit: 3 # days
+```
+
 ## Implemented checks
 
 ### Run checks
@@ -119,12 +129,12 @@ RunNameCheck:
 
 ### Sample checks
 
-#### SampleTimeCheck
+#### MissingResultsCheck
 
 This check will raise a QA check with severity `Warning` against a sample if the sample date is older than the specified limit and the sample still has status `SOME_RESULTS_BACK`. The limit is configured in the YAML config file. The default is 3 days.
 
 ```yaml
-SampleTimeCheck:
+MissingResultsCheck:
   age_limit: 3 # days
 ```
 

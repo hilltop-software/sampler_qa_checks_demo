@@ -5,7 +5,7 @@ from .i_check import ICheck
 from HilltopHost.Sampler import QACheck, QACheckSeverity
 from .. import utils
 
-class SampleTimeCheck(ICheck):
+class MissingResultsCheck(ICheck):
     """
     An implementation of the ICheck interface that checks a sample.
     """
@@ -13,7 +13,7 @@ class SampleTimeCheck(ICheck):
     def __init__(self, config, repository):
         super().__init__(config, repository)
         self.age_limit = self.config.get("age_limit", 3) # default to 3 days ago
-        HilltopHost.LogInfo(f"sampler_qa_checks_demo - SampleTimeCheck is using an age limit of {self.age_limit} days")        
+        HilltopHost.LogInfo(f"sampler_qa_checks_demo - MissingResultsCheck is using an age limit of {self.age_limit} days")        
     
     def perform_checks(self, run_id, context) -> List[QACheck]:
         if self.disabled:
