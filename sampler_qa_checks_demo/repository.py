@@ -1,13 +1,18 @@
 import HilltopHost
 
+
 class Repository:
-    
+
     _measurement_cache = {}
+    _metadata_cache = {}
 
     def __init__(self, connection):
         self.connection = connection
 
     def get_sample_metadata(self, sample_id, lab_test_id):
+        if (sample_id, lab_test_id) in self._metadata_cache:  # use tuple as cache key
+            return self._metadata_cache[lab_test_id]
+
         try:
             cursor = self.connection.cursor()
             query = """
@@ -49,14 +54,17 @@ class Repository:
                 AND lt.LabTestID = ?
             """
             cursor.execute(query, sample_id, lab_test_id)
-            row  = cursor.fetchone()
+            row = cursor.fetchone()
             if row is None:
                 cursor.close()
                 return
 
-            column_names = [column[0] for column in cursor.description]  # Extract column names
+            column_names = [
+                column[0] for column in cursor.description
+            ]  # Extract column names
             cursor.close()
             result_dict = dict(zip(column_names, row))  # Map column names to values
+            self._metadata_cache[(sample_id, lab_test_id)] = result_dict
             return result_dict
         except Exception as e:
             HilltopHost.LogError(f"sampler_qa_checks_demo - Error occurred: {str(e)}")
@@ -83,11 +91,13 @@ class Repository:
                 lt.LabTestID = ?
                     """
             cursor.execute(query, lab_test_id)
-            row  = cursor.fetchone()
+            row = cursor.fetchone()
             if row is None:
                 cursor.close()
                 return
-            column_names = [column[0] for column in cursor.description]  # Extract column names
+            column_names = [
+                column[0] for column in cursor.description
+            ]  # Extract column names
             cursor.close()
             result_dict = dict(zip(column_names, row))  # Map column names to values
             self._measurement_cache[lab_test_id] = result_dict
