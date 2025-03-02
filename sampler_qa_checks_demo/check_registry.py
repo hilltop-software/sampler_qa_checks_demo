@@ -5,7 +5,7 @@ from .checks.i_check import ICheck
 from .checks.run_name_check import RunNameCheck
 from .checks.sample_time_check import SampleTimeCheck
 from .checks.outside_range_check import OutsideRangeCheck
-
+from .checks.percentile_check import PercentileCheck
 
 class CheckRegistry:
     """
@@ -21,7 +21,7 @@ class CheckRegistry:
     _registry: Dict[str, List[Type[ICheck]]] = {
         "run_checks": [RunNameCheck],
         "sample_checks": [SampleTimeCheck],
-        "test_checks": [OutsideRangeCheck],
+        "test_checks": [OutsideRangeCheck, PercentileCheck],
     }
 
     @classmethod

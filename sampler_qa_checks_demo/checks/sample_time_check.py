@@ -10,12 +10,14 @@ class SampleTimeCheck(ICheck):
     An implementation of the ICheck interface that checks a sample.
     """
     
-    def __init__(self, config, connection):
-        super().__init__(config, connection)
+    def __init__(self, config, repository):
+        super().__init__(config, repository)
         self.age_limit = self.config.get("age_limit", 3) # default to 3 days ago
         HilltopHost.LogInfo(f"sampler_qa_checks_demo - SampleTimeCheck is using an age limit of {self.age_limit} days")        
     
     def perform_checks(self, run_id, context) -> List[QACheck]:
+        if self.disabled:
+            return []
         if self.has_check_result(context, "sample_check_time"):
             return []
 

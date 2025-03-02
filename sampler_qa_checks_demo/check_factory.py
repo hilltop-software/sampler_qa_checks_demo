@@ -1,6 +1,7 @@
 from typing import List
 from .checks.i_check import ICheck
 from .check_registry import CheckRegistry
+from .repository import Repository
 
 class CheckFactory:
     """
@@ -11,7 +12,7 @@ class CheckFactory:
     """
     def __init__(self, config: dict, connection):
         self.config = config
-        self.connection = connection
+        self.repository = Repository(connection)
 
     def create_run_checks(self) -> List[ICheck]:
         return self._create_checks("run_checks")
@@ -30,5 +31,5 @@ class CheckFactory:
             # Get the class name to use as the key for the configuration block
             class_name = check_class.__name__
             class_config = self.config.get(class_name, {})
-            instantiated_checks.append(check_class(class_config, self.connection))
+            instantiated_checks.append(check_class(class_config, self.repository))
         return instantiated_checks

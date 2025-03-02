@@ -8,6 +8,8 @@ class SimpleCheck(ICheck):
     A simple implementation of the ICheck interface that logs a message.
     """
     def perform_checks(self, run_id, context) -> List[QACheck]:
+        if self.disabled:
+            return []
         HilltopHost.LogInfo("sampler_qa_checks_demo - SimpleCheck called")
         qa_check = QACheck()
         qa_check.Title = "Simple Check"

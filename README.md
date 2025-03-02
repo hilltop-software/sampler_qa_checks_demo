@@ -145,7 +145,6 @@ OutsideRangeCheck:
       max: 8
 ```
 
-
 ## Adding new checks
 
 To add a new check:
@@ -161,7 +160,9 @@ The class will then be called and passed:
 
 ## Preventing duplicate checks by checking labels
 
-When you save a QACheck you must attach a label. Run, sample, or test objects provided in the payload include a `QAChecks` attribute containing previous checks saved against that object. By checking the labels in the `QAChecks` you can see if your check has already been saved, and skip creating it again. The `ICheck` interface provides a `has_check_result()` helper method to make this easier:
+When you call `HilltopHost.Sampler.SaveQACheck()` to save a QACheck you must attach a mandatory label. This is provided back to you so you can see if youve already reported a problem.
+
+Run, sample, or test objects provided in the payload include a `QAChecks` attribute containing previous checks saved against that object. By checking the labels in the `QAChecks` you can see if your check has already been saved, and skip creating it again. The `ICheck` interface provides a `has_check_result()` helper method to make this easier:
 
 ```python
 if self.has_check_result(context, "outside_range_check"):
