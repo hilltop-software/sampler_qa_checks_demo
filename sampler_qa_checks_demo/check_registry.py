@@ -3,7 +3,7 @@ from .checks.i_check import ICheck
 
 from .checks.run_name_check import RunNameCheck
 from .checks.test_check import TestCheck
-from .checks.sample_time_check import MissingResultsCheck
+from .checks.missing_results_check import MissingResultsCheck
 from .checks.noisy_check import NoisyCheck
 from .checks.outside_range_check import OutsideRangeCheck
 from .checks.percentile_check import PercentileCheck

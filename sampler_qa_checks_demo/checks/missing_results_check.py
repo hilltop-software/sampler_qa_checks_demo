@@ -18,7 +18,7 @@ class MissingResultsCheck(ICheck):
         HilltopHost.LogInfo(f"sampler_qa_checks_demo - MissingResultsCheck is using an age limit of {self.age_limit} days")        
     
     def perform_checks(self, run_id, context) -> List[QACheck]:
-        if self.has_check_result(context, "sample_check_time"):
+        if self.has_check_result(context, "missing_results_check"):
             return
 
         # we're only checking samples that are old, yet still not complete
@@ -39,5 +39,5 @@ class MissingResultsCheck(ICheck):
             qa_check.SampleID = context.SampleID
             qa_check.Severity = QACheckSeverity.Warning
             qa_check.Details = details
-            qa_check.Label = "sample_check_time"
+            qa_check.Label = "missing_results_check"
             return [qa_check]

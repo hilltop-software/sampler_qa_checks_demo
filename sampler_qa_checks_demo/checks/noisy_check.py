@@ -7,7 +7,7 @@ from HilltopHost.Sampler import QACheck, QACheckSeverity
 
 class NoisyCheck(ICheck):
     """
-    An simple implementation of the ICheck interface that randomly saves a critical QA check for samples.
+    An simple implementation of the ICheck interface that randomly saves a QA check for samples.
     
     And it'll do it over and over again for the same sample, because it's noisy.
     """
@@ -21,7 +21,7 @@ class NoisyCheck(ICheck):
         qa_check.Title = f"Noisy check for {context.SampleID} at {datetime.now().strftime('%y%m%d.%H%M%S.%f')[:17]}"
         qa_check.RunID = run_id
         qa_check.SampleID = context.SampleID
-        qa_check.Severity = QACheckSeverity.Critical
+        qa_check.Severity = QACheckSeverity.Information
         qa_check.Details = f"This is a NoisyCheck QA check that's randomly added to samples.\nRandom: {x}"
         qa_check.Label = "noisy_check"
         return [qa_check]

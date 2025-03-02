@@ -27,10 +27,13 @@ class ICheck:
         """
         Check if a QA check with the given label has already been performed.
         """
+
         if context.QAChecks is None:
             return False
+
         if len(context.QAChecks) == 0:
             return False
+        
         for check in context.QAChecks:
             if check.Label == label:
                 return True

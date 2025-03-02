@@ -200,7 +200,7 @@ TestCheck:
 
 ### NoisyCheck
 
-This has a 50/50 chance of adding a critical QA check to a sample. It doesn't check for previous QA checks so it can add multiple QA checks to the same sample if it's run repeatedly.
+This has a 50/50 chance of adding a QA check to a sample. It doesn't check for previous QA checks so it can add multiple QA checks to the same sample if it's run repeatedly.
 
 ```yaml
 NoisyCheck:
