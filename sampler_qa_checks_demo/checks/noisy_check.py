@@ -12,8 +12,6 @@ class NoisyCheck(ICheck):
     And it'll do it over and over again for the same sample, because it's noisy.
     """
     def perform_checks(self, run_id, context) -> List[QACheck]:
-        if self.disabled:
-            return
 
         x = random.random()
         if x > 0.5:

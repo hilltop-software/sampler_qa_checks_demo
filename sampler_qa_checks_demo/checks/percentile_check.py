@@ -20,6 +20,8 @@ class PercentileCheck(ICheck):
 
     def __init__(self, config, repository):
         super().__init__(config, repository)
+        if self.disabled:
+            return
         self.period_years = self.config.get(
             "period_years", 15
         )  # default to 15 years ago
@@ -29,8 +31,6 @@ class PercentileCheck(ICheck):
         HilltopHost.LogInfo(
             f"sampler_qa_checks_demo - PercentileCheck is using a history limit of {self.period_years} years and {self.min_data_points} data points"
         )
-        if self.disabled:
-            return
         # if we're not disabled then connect to the Hilltop data file
         data_file = self.config.get("data_file")
         if data_file is None:
@@ -51,8 +51,6 @@ class PercentileCheck(ICheck):
         Hilltop.Disconnect(self.dfile1)
 
     def perform_checks(self, run_id, context) -> List[QACheck]:
-        if self.disabled:
-            return
         if self.has_check_result(context, "percentile_check"):
             return
         if context.Result is None or context.Result.ResultValue is "":

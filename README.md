@@ -7,7 +7,7 @@ For more information, read the Hilltop guide for developing Hilltop plugins.
 > [!NOTE]
 > You do no have to implement your plugin following this architecture. All your plugin must do is implement an entry point for `sampler_qa_checks()` and use `HilltopHost.Sampler.SaveQACheck()` to save your QA checks to the database.
 > 
-> Even saving QA checks is optional, you may chose to write a report and save it somewhere instead, or send a notification, it's entirely up to you. For example, you may wish to save just a single `OK` QA check for the whole run, once all results are in and all checks pass.
+> Even saving QA checks is optional. You could write a report to file or send a notification, it's entirely up to you. For example, you may wish to save just a single `OK` QA check for the run, once all results are in and all checks pass.
 
 ## Hilltop Python package installation
 
@@ -114,6 +114,8 @@ MissingResultsCheck:
   age_limit: 3 # days
 ```
 
+Checks are also ignored if they are not in the YAML configuration.
+
 ## Implemented checks
 
 ### Run checks
@@ -155,6 +157,18 @@ OutsideRangeCheck:
       max: 8
 ```
 
+#### ThresholdCheck
+
+This check will raise a QA check as Information, Warning, or Critical if the result value is over a predefined threshold for that measurement.
+
+```yaml
+ThresholdCheck:
+  "Nitrate - Nitrogen": # Hilltop measurement name
+    Information: 1.0
+    Warning: 3.0
+    Critical: 10.0
+```
+
 #### PercentileCheck
 
 This check will raise a QA check with either `Warning` or `Critical` severity against a lab test result if the result falls outside the specified percentiles from the historical record for that site and measurement. You must specify the Hilltop measurement name for the lab test and provide a `warning` range and `critical` range. You must also specify the Hilltop `data_file` where the historical record can be found. You can also specify the `min_data_points` required in the historical record before the check can be performed and the `period_years` for how far back in the historical record you will look.
@@ -163,7 +177,7 @@ This check requires the `Hilltop` Python module, which can be downloaded from th
 
 ```yaml
 PercentileCheck: # test-level check that checks a result is within a certain percentile
-  data_file: "C:\\Hilltop\\WQADC_Demo\\Archive.hts"
+  data_file: "C:\\Hilltop\\Data\\Archive.hts"
   min_data_points: 15
   period_years: 25
   "pH": # Hilltop measurement name
@@ -173,12 +187,14 @@ PercentileCheck: # test-level check that checks a result is within a certain per
 
 ## Testing checks
 
-### SimpleCheck
+These checks are for plugin and UX testing purposes.
+
+### TestCheck
 
 This will add a QA check record to every run. Once only.
 
 ```yaml
-SimpleCheck:
+TestCheck:
   disabled: false
 ```
 

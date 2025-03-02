@@ -1,5 +1,5 @@
-import json
 import pyodbc
+import traceback
 import HilltopHost
 from .config_loader import ConfigLoader
 from .check_factory import CheckFactory
@@ -35,27 +35,39 @@ class SamplerQAChecksPluginDemo:
 
             for run in payload.Runs:
                 for run_check in run_checks:
+                    if run_check.disabled:
+                        continue
                     qa_checks = run_check.perform_checks(run.RunID, run)
                     self.save_qa_checks(qa_checks)
                 for sample in run.Samples:
                     for sample_check in sample_checks:
+                        if sample_check.disabled:
+                            continue
                         qa_checks = sample_check.perform_checks(run.RunID, sample)
                         self.save_qa_checks(qa_checks)
                     for test in sample.Tests:
                         if test.IsTestSet == False:
                             for test_check in test_checks:
+                                if test_check.disabled:
+                                    continue
                                 qa_checks = test_check.perform_checks(run.RunID, test)
                                 self.save_qa_checks(qa_checks)
                         else:
                             for subtest in test.Tests:
                                 for test_check in test_checks:
+                                    if test_check.disabled:
+                                        continue
                                     qa_checks = test_check.perform_checks(
                                         run.RunID, subtest
                                     )
                                     self.save_qa_checks(qa_checks)
             HilltopHost.LogInfo(f"sampler_qa_checks_demo - checks finished")
         except Exception as e:
-            HilltopHost.LogError(f"sampler_qa_checks_demo - error occurred: {str(e)}")
+            # tb = traceback.extract_tb(e.__traceback__)
+            HilltopHost.LogError(f"sampler_qa_checks_demo - error occurred: {e}: {traceback.format_exc()}")
+            
+            # for filename, line, func, text in tb:
+            #     HilltopHost.LogError(f"sampler_qa_checks_demo - {filename}:{line}")
 
     def save_qa_checks(self, qa_checks):
         if qa_checks is None:

@@ -2,6 +2,8 @@ import xml.etree.ElementTree as ET
 import json
 
 def dump(obj):
+    if isinstance(obj, dict):
+        return json.dumps(obj)
     properties = []
     for attr in dir(obj):
         if not attr.startswith('_') and hasattr(obj, attr):

@@ -1,12 +1,13 @@
 from typing import List, Dict, Type
 from .checks.i_check import ICheck
 
-# from .checks.simple_check import SimpleCheck
 from .checks.run_name_check import RunNameCheck
+from .checks.test_check import TestCheck
 from .checks.sample_time_check import MissingResultsCheck
 from .checks.noisy_check import NoisyCheck
 from .checks.outside_range_check import OutsideRangeCheck
 from .checks.percentile_check import PercentileCheck
+from .checks.threshold_check import ThresholdCheck
 
 class CheckRegistry:
     """
@@ -20,9 +21,9 @@ class CheckRegistry:
     """
 
     _registry: Dict[str, List[Type[ICheck]]] = {
-        "run_checks": [RunNameCheck],
+        "run_checks": [RunNameCheck, TestCheck],
         "sample_checks": [MissingResultsCheck, NoisyCheck],
-        "test_checks": [OutsideRangeCheck, PercentileCheck],
+        "test_checks": [OutsideRangeCheck, PercentileCheck, ThresholdCheck],
     }
 
     @classmethod

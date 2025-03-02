@@ -30,6 +30,6 @@ class CheckFactory:
         for check_class in available_check_classes:
             # Get the class name to use as the key for the configuration block
             class_name = check_class.__name__
-            class_config = self.config.get(class_name, {})
+            class_config = self.config.get(class_name, None)
             instantiated_checks.append(check_class(class_config, self.repository))
         return instantiated_checks

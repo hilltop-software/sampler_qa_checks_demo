@@ -12,8 +12,6 @@ class OutsideRangeCheck(ICheck):
     """
 
     def perform_checks(self, run_id, context) -> List[QACheck]:
-        if self.disabled:
-            return
         if self.has_check_result(context, "outside_range_check"):
             return
 

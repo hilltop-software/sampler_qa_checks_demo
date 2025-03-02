@@ -2,7 +2,7 @@ db_server: localhost # database server host name
 db_name: Hilltop # database name
 # uses trusted comnnection to connect to the database
 save_qachecks_to_database: false # save the QA checks to the database
-SimpleCheck:
+TestCheck:
   disabled: true # disable the check
 RunNameCheck: # simple run-level check that checks if the run name is too long
   name_max_length: 100
@@ -23,3 +23,8 @@ PercentileCheck: # test-level check that checks a result is within a certain per
   "pH": # Hilltop measurement name
     critical: 5,95
     warning: 10,90
+ThresholdCheck: # test-level check that checks a result is over specified thresholds
+  "Nitrate - Nitrogen":
+    Information: 1.0
+    Warning: 3.0
+    Critical: 10.0

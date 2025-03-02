@@ -1,6 +1,7 @@
 from typing import List
 import HilltopHost
 from HilltopHost.Sampler import QACheck
+from .. import utils
 
 class ICheck:
     """
@@ -10,7 +11,10 @@ class ICheck:
     def __init__(self, config, repository):
         self.config = config
         self.repository = repository
-        self.disabled = self.config.get("disabled", False)
+        if config is None:
+            self.disabled = True
+        else:
+            self.disabled = config.get("disabled", False)
         if self.disabled:
             HilltopHost.LogInfo(
                 f"sampler_qa_checks_demo - {self.__class__.__name__} is disabled"

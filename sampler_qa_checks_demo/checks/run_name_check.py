@@ -11,13 +11,13 @@ class RunNameCheck(ICheck):
     
     def __init__(self, config, repository):
         super().__init__(config, repository)
+        if self.disabled:
+            return
         self.name_max_length = self.config.get("name_max_length", 100) # default to 100 characters
         HilltopHost.LogInfo(f"sampler_qa_checks_demo - RunNameCheck is using a limit of {self.name_max_length} characters")        
     
 
     def perform_checks(self, run_id, context) -> List[QACheck]:
-        if self.disabled:
-            return
         if self.has_check_result(context, "run_name_check"):
             return
         if len(context.RunName) > self.name_max_length:
