@@ -7,7 +7,7 @@ class Repository:
     def __init__(self, connection):
         self.connection = connection
 
-    def get_sample_metadata_by_sample_and_lab_test_id(self, sample_id, lab_test_id):
+    def get_sample_metadata(self, sample_id, lab_test_id):
         try:
             cursor = self.connection.cursor()
             query = """
@@ -21,6 +21,7 @@ class Repository:
                 smp.SampleID,
                 smp.SiteID,
                 st.SiteName COLLATE SQL_Latin1_General_CP1_CI_AS AS SiteName,
+                r.RunID,
                 r.RunName,
                 r.RunDate,
                 COALESCE(sp.SampleTypeCode, p.SampleTypeCode) AS SampleTypeCode, -- Select from Sample first, fallback to Run

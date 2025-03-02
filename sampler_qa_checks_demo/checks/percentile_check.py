@@ -25,13 +25,13 @@ class PercentileCheck(ICheck):
         )  # default to 15 years ago
         self.min_data_points = self.config.get(
             "min_data_points", 20
-        )  # default to 15 years ago
+        )  # default to minimum 20 data points
         HilltopHost.LogInfo(
             f"sampler_qa_checks_demo - PercentileCheck is using a history limit of {self.period_years} years and {self.min_data_points} data points"
         )
         if self.disabled:
             return
-        # if we're not diabled then connect to the Hilltop data file
+        # if we're not disabled then connect to the Hilltop data file
         data_file = self.config.get("data_file")
         if data_file is None:
             HilltopHost.LogWarning(
@@ -52,44 +52,34 @@ class PercentileCheck(ICheck):
 
     def perform_checks(self, run_id, context) -> List[QACheck]:
         if self.disabled:
-            return []
+            return
         if self.has_check_result(context, "percentile_check"):
-            return []
-
+            return
         if context.Result is None or context.Result.ResultValue is "":
-            return []
-
+            return
         if self.dfile1 is None:
-            return []
+            return
 
         sample_id = context.SampleID
         lab_test_id = context.LabTestID
 
-        metadata = self.repository.get_sample_metadata_by_sample_and_lab_test_id(
-            sample_id, lab_test_id
-        )
+        metadata = self.repository.get_sample_metadata(sample_id, lab_test_id)
         if metadata is None:
             HilltopHost.LogWarning(
                 f"sampler_qa_checks_demo - Metadata not found for sample {sample_id}, lab test {lab_test_id}"
             )
-            return []
+            return
 
         measurement = metadata["MeasurementName"]
-        if measurement not in self.config:
-            # HilltopHost.LogWarning(f"sampler_qa_checks_demo - No percentile range configured for {measurement}")
-            return []
+        if (
+            measurement not in self.config
+        ):  # No percentile range configured for {measurement}"
+            return
 
         result = Decimal(context.Result.ResultValue)
-        return self.check_result(run_id, metadata, result)
+        return self.check_result(metadata, result)
 
-    def check_result(self, run_id, metadata, result):
-        # set up a qa_check object, just in case
-        qa_check = QACheck()
-        qa_check.RunID = run_id
-        qa_check.SampleID = metadata["SampleID"]
-        qa_check.LabTestID = metadata["LabTestID"]
-        qa_check.Label = "percentile_check"
-
+    def check_result(self, metadata, result):
 
         # get the last x years of data based on the configuration
         # this ignores leap years
@@ -106,85 +96,118 @@ class PercentileCheck(ICheck):
 
         if s1.size < self.min_data_points:
             # HilltopHost.LogInfo(f"sampler_qa_checks_demo - Insufficient ({s1.size}) {measurement} data points for {site}")
-            return None
+            return
 
-        critical_config = self.config[measurement].get("critical", "")
-        critical_range = tuple(map(int, critical_config.split(",")))
-        if not self.validate_range(critical_range):
-            HilltopHost.LogWarning(
-                f"sampler_qa_checks_demo - Invalid critical range configured for {measurement}"
-            )
-            return []
+        critical_range = self.get_range(measurement, "critical")
+        if critical_range is None:
+            return
 
-        warning_config = self.config[measurement].get("warning", "")
-        warning_range = tuple(map(int, warning_config.split(",")))
-        if not self.validate_range(warning_range):
-            HilltopHost.LogWarning(
-                f"sampler_qa_checks_demo - Invalid warning range configured for {measurement}"
-            )
+        warning_range = self.get_range(measurement, "warning")
+        if warning_range is None:
+            return
 
         # Use Hilltop.PDist to get percentiles
         percentiles = self.get_percentiles(site, measurement, start_date, end_date)
-
         if percentiles is None:
+            return
+
+        qa_check = self.check_percentiles(
+            metadata,
+            result,
+            percentiles,
+            critical_range,
+            "critical",
+            site,
+            measurement,
+            s1.size,
+            start_date,
+            end_date,
+            QACheckSeverity.Critical,
+        )
+        if qa_check is not None:
+            return [qa_check]
+
+        qa_check = self.check_percentiles(
+            metadata,
+            result,
+            percentiles,
+            warning_range,
+            "warning",
+            site,
+            measurement,
+            s1.size,
+            start_date,
+            end_date,
+            QACheckSeverity.Warning,
+        )
+        if qa_check is not None:
+            return [qa_check]
+
+        return None
+
+    def check_percentiles(
+        self,
+        metadata,
+        result,
+        percentiles,
+        range,
+        key,
+        site,
+        measurement,
+        size,
+        start_date,
+        end_date,
+        severity,
+    ):
+        # set up a qa_check object, just in case
+        qa_check = QACheck()
+        qa_check.RunID = metadata["RunID"]
+        qa_check.SampleID = metadata["SampleID"]
+        qa_check.LabTestID = metadata["LabTestID"]
+        qa_check.Label = "percentile_check"
+
+        lower, upper = range
+        lower_ordinal = utils.ordinal(lower)
+        upper_ordinal = utils.ordinal(upper)
+        percentile_lower = percentiles[lower - 1]
+        percentile_upper = percentiles[upper - 1]
+        if result < percentile_lower or result > percentile_upper:
+            qa_check.Title = f"{measurement} is outside of {key} percentiles"
+            qa_check.Severity = severity
+            qa_check.Details = f"""{measurement} is outside of the critical percentiles
+{self.data_file} has {size} data points for {measurement} at {site} from {start_date} to {end_date}
+{key} percentile limits: {lower_ordinal} and {upper_ordinal}
+{lower_ordinal} percentile: {percentile_lower}
+{upper_ordinal} percentile: {percentile_upper}
+Result: {result}
+            """
+            if result < percentile_lower:
+                qa_check.Details += f"\nResult is below the {lower_ordinal} percentile"
+            if result > percentile_upper:
+                qa_check.Details += f"\nResult is above the {upper_ordinal} percentile"
+            return qa_check
+        return None
+
+    def get_percentiles(self, site, measurement, start_date, end_date):
+        pdist = Hilltop.PDist(self.dfile1, site, measurement, start_date, end_date)
+        if not pdist:
             HilltopHost.LogWarning(
                 f"sampler_qa_checks_demo - No percentiles returned for {measurement} at {site}"
             )
-            return []
+            return None
+        # pdist is a tuple of (percentiles: numpy, extrema: dict)
+        percentiles, extrema = pdist
+        return percentiles
 
-        lower, upper = critical_range
-        lower_ordinal = utils.ordinal(lower)
-        upper_ordinal = utils.ordinal(upper)
-        percentile_lower = percentiles[lower - 1]
-        percentile_upper = percentiles[upper - 1]
-        if result < percentile_lower or result > percentile_upper:
-            qa_check.Title = f"{measurement} is outside of critical percentiles"
-            qa_check.Severity = QACheckSeverity.Critical
-            qa_check.Details = f"""{measurement} is outside of the critical percentiles
-{self.data_file} has {s1.size} data points for {measurement} at {site} from {start_date} to {end_date}
-Critical percentile limits: {lower_ordinal} and {upper_ordinal}
-{lower_ordinal} percentile: {percentile_lower}
-{upper_ordinal} percentile: {percentile_upper}
-Result: {result}
-            """
-            if result < percentile_lower:
-                qa_check.Details += f"\nResult is below the {lower_ordinal} percentile"
-            if result > percentile_upper:
-                qa_check.Details += f"\nResult is above the {upper_ordinal} percentile"
-            return [qa_check]
-
-        lower, upper = warning_range
-        lower_ordinal = utils.ordinal(lower)
-        upper_ordinal = utils.ordinal(upper)
-        percentile_lower = percentiles[lower - 1]
-        percentile_upper = percentiles[upper - 1]
-        if result < percentile_lower or result > percentile_upper:
-            qa_check.Title = f"{measurement} is outside of warning percentiles"
-            qa_check.Severity = QACheckSeverity.Warning
-            qa_check.Details = f"""{measurement} is outside of the warning percentiles
-{self.data_file} has {s1.size} data points for {measurement} at {site} from {start_date} to {end_date}
-Warning percentile limits: {lower_ordinal} and {upper_ordinal}
-{lower_ordinal} percentile: {percentile_lower}
-{upper_ordinal} percentile: {percentile_upper}
-Result: {result}
-            """
-            if result < percentile_lower:
-                qa_check.Details += f"\nResult is below the {lower_ordinal} percentile"
-            if result > percentile_upper:
-                qa_check.Details += f"\nResult is above the {upper_ordinal} percentile"
-            return [qa_check]
-
-
-        return []
-
-    def get_percentiles(self, site, measurement, start_date, end_date):
-        # percentiles is a tuple of (percentiles: numpy, extrema: dict)
-        pdist = Hilltop.PDist(self.dfile1, site, measurement, start_date, end_date)
-        if pdist:
-            percentiles, extrema = pdist
-            # HilltopHost.LogInfo(f"Percentiles ({percentiles[0].size}): {percentiles}")
-            return percentiles
-        return None
+    def get_range(self, measurement, key):
+        config = self.config[measurement].get(key, "")
+        range = tuple(map(int, config.split(",")))
+        if not self.validate_range(range):
+            HilltopHost.LogWarning(
+                f"sampler_qa_checks_demo - Invalid {key} range configured for {measurement}"
+            )
+            return None
+        return range
 
     def validate_range(self, range):
         if range is None:
@@ -197,4 +220,3 @@ Result: {result}
         if lower > upper:
             return False
         return True
-
