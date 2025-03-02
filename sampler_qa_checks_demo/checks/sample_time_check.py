@@ -17,16 +17,16 @@ class SampleTimeCheck(ICheck):
     
     def perform_checks(self, run_id, context) -> List[QACheck]:
         if self.disabled:
-            return []
+            return
         if self.has_check_result(context, "sample_check_time"):
-            return []
+            return
 
         # we're only checking samples that are old, yet still not complete
         if context.StatusID != HilltopHost.RunStatus.SOME_RESULTS_BACK:
-            return []
+            return
         
         if not context.SampleTime:
-            return []
+            return
         
         today = datetime.now()
         n_days_ago = today - timedelta(days=self.age_limit)
@@ -34,11 +34,10 @@ class SampleTimeCheck(ICheck):
         if sample_time < n_days_ago:
             details = f"Sample ID {context.SampleID} has only some results back, but sample time is {sample_time} and older than {self.age_limit} days"
             qa_check = QACheck()
-            qa_check.Title = "Sample is missing results"
+            qa_check.Title = f"Sample {context.SampleID} is missing results"
             qa_check.RunID = run_id
             qa_check.SampleID = context.SampleID
             qa_check.Severity = QACheckSeverity.Warning
             qa_check.Details = details
             qa_check.Label = "sample_check_time"
             return [qa_check]
-        return []

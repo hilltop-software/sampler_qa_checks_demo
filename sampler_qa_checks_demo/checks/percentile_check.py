@@ -143,8 +143,6 @@ class PercentileCheck(ICheck):
         if qa_check is not None:
             return [qa_check]
 
-        return None
-
     def check_percentiles(
         self,
         metadata,
@@ -186,7 +184,6 @@ Result: {result}
             if result > percentile_upper:
                 qa_check.Details += f"\nResult is above the {upper_ordinal} percentile"
             return qa_check
-        return None
 
     def get_percentiles(self, site, measurement, start_date, end_date):
         pdist = Hilltop.PDist(self.dfile1, site, measurement, start_date, end_date)
@@ -194,7 +191,7 @@ Result: {result}
             HilltopHost.LogWarning(
                 f"sampler_qa_checks_demo - No percentiles returned for {measurement} at {site}"
             )
-            return None
+            return
         # pdist is a tuple of (percentiles: numpy, extrema: dict)
         percentiles, extrema = pdist
         return percentiles
@@ -206,7 +203,7 @@ Result: {result}
             HilltopHost.LogWarning(
                 f"sampler_qa_checks_demo - Invalid {key} range configured for {measurement}"
             )
-            return None
+            return
         return range
 
     def validate_range(self, range):

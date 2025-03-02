@@ -145,6 +145,42 @@ OutsideRangeCheck:
       max: 8
 ```
 
+#### PercentileCheck
+
+This check will raise a QA check with either `Warning` or `Critical` severity against a lab test result if the result falls outside the specified percentiles from the historical record for that site and measurement. You must specify the Hilltop measurement name for the lab test and provide a `warning` range and `critical` range. You must also specify the Hilltop `data_file` where the historical record can be found. You can also specify the `min_data_points` required in the historical record before the check can be performed and the `period_years` for how far back in the historical record you will look.
+
+This check requires the `Hilltop` Python module, which can be downloaded from the Hilltop releases and installed as a Python wheel.
+
+```yaml
+PercentileCheck: # test-level check that checks a result is within a certain percentile
+  data_file: "C:\\Hilltop\\WQADC_Demo\\Archive.hts"
+  min_data_points: 15
+  period_years: 25
+  "pH": # Hilltop measurement name
+    critical: 15,85
+    warning: 20,80
+```
+
+## Testing checks
+
+### SimpleCheck
+
+This will add a QA check record to every run. Once only.
+
+```yaml
+SimpleCheck:
+  disabled: false
+```
+
+### NoisyCheck
+
+This has a 50/50 chance of adding a critical QA check to a sample. It doesn't check for previous QA checks so it can add multiple QA checks to the same sample if it's run repeatedly.
+
+```yaml
+NoisyCheck:
+  disabled: false
+```
+
 ## Adding new checks
 
 To add a new check:
@@ -166,5 +202,5 @@ Run, sample, or test objects provided in the payload include a `QAChecks` attrib
 
 ```python
 if self.has_check_result(context, "outside_range_check"):
-    return []
+    return
 ```

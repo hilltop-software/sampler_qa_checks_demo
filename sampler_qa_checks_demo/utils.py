@@ -13,7 +13,6 @@ def get_parameter_value_from_test_info(xml, parameter):
     for param in root.findall(".//Parameter"):
         if param.get("Name") == parameter:
             return param.get("Value")
-    return None
 
 def truncate(x, length=50):
     return x[:length-3] + '...' if len(x) > length else x

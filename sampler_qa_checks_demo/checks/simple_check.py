@@ -9,7 +9,11 @@ class SimpleCheck(ICheck):
     """
     def perform_checks(self, run_id, context) -> List[QACheck]:
         if self.disabled:
-            return []
+            return
+        
+        if self.has_check_result(context, "simple_check"):
+            return
+        
         HilltopHost.LogInfo("sampler_qa_checks_demo - SimpleCheck called")
         qa_check = QACheck()
         qa_check.Title = "Simple Check"

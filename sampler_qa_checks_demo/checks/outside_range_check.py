@@ -13,27 +13,25 @@ class OutsideRangeCheck(ICheck):
 
     def perform_checks(self, run_id, context) -> List[QACheck]:
         if self.disabled:
-            return []
+            return
         if self.has_check_result(context, "outside_range_check"):
-            return []
+            return
 
         if context.Result is None or context.Result.ResultValue is "":
-            return []
+            return
         
         metadata = self.repository.get_measurement_by_lab_test_id(context.LabTestID)
         if metadata is None:
             HilltopHost.LogWarning(f"sampler_qa_checks_demo - Metadata not found for lab test {context.LabTestID}")
-            return []
+            return
         
         measurement = metadata['MeasurementName']
         
         if measurement not in self.config:
             # HilltopHost.LogWarning(f"sampler_qa_checks_demo - No range configured for {measurement}")
-            return []
+            return
 
         result = Decimal(context.Result.ResultValue)  
-        HilltopHost.LogInfo(f"sampler_qa_checks_demo - outside_range_check {result} for {measurement}")
-        measurement
         return self.check_result(run_id, context, measurement, result)
     
     def check_result(self, run_id, context, measurement, result):
@@ -64,8 +62,6 @@ Result: {result}
             """
             return [qa_check]
         
-        return []
-
     def get_range(self, measurement: str, severity: str) -> tuple:
         range_config = self.config.get(measurement, {}).get(severity)
         if range_config and 'min' in range_config and 'max' in range_config:

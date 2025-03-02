@@ -52,7 +52,7 @@ class Repository:
             row  = cursor.fetchone()
             if row is None:
                 cursor.close()
-                return None
+                return
 
             column_names = [column[0] for column in cursor.description]  # Extract column names
             cursor.close()
@@ -60,7 +60,6 @@ class Repository:
             return result_dict
         except Exception as e:
             HilltopHost.LogError(f"sampler_qa_checks_demo - Error occurred: {str(e)}")
-            return None
 
     def get_measurement_by_lab_test_id(self, lab_test_id):
         if lab_test_id in self._measurement_cache:
@@ -87,7 +86,7 @@ class Repository:
             row  = cursor.fetchone()
             if row is None:
                 cursor.close()
-                return None
+                return
             column_names = [column[0] for column in cursor.description]  # Extract column names
             cursor.close()
             result_dict = dict(zip(column_names, row))  # Map column names to values
@@ -95,4 +94,3 @@ class Repository:
             return result_dict
         except Exception as e:
             HilltopHost.LogError(f"sampler_qa_checks_demo - Error occurred: {str(e)}")
-            return None

@@ -61,7 +61,7 @@ class SamplerQAChecksPluginDemo:
         if qa_checks is None:
             return
         for qa_check in qa_checks:
-            if self.save:
+            if self.save:                
                 HilltopHost.Sampler.SaveQACheck(qa_check)
             else:
                 HilltopHost.LogInfo(utils.dump(qa_check))

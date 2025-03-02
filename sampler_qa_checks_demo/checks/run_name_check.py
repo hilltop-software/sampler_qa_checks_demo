@@ -17,9 +17,9 @@ class RunNameCheck(ICheck):
 
     def perform_checks(self, run_id, context) -> List[QACheck]:
         if self.disabled:
-            return []
+            return
         if self.has_check_result(context, "run_name_check"):
-            return []
+            return
         if len(context.RunName) > self.name_max_length:
             qa_check = QACheck()
             qa_check.Title = "Run name is too long"
