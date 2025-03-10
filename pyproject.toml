@@ -9,6 +9,7 @@ version = "0.1"
 dependencies = [
     "pyyaml>=6.0",
     "pyodbc>=5.2",
+    "Hilltop>=7.0",
 ]
 
 [project.entry-points.'hilltop.sampler_qa_checks']
