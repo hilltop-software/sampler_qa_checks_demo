@@ -1,13 +1,18 @@
-import pyodbc
 import HilltopHost
-from .utils import dump_object
+
 
 class Repository:
-    def __init__(self, server, database, username, password):
-        self.connection_string = f'DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}'
-        self.connection = pyodbc.connect(self.connection_string)
 
-    def get_sample_metadata_by_sample_and_lab_test_id(self, sample_id, lab_test_id):
+    _measurement_cache = {}
+    _metadata_cache = {}
+
+    def __init__(self, connection):
+        self.connection = connection
+
+    def get_sample_metadata(self, sample_id, lab_test_id):
+        if (sample_id, lab_test_id) in self._metadata_cache:  # use tuple as cache key
+            return self._metadata_cache[lab_test_id]
+
         try:
             cursor = self.connection.cursor()
             query = """
@@ -21,6 +26,7 @@ class Repository:
                 smp.SampleID,
                 smp.SiteID,
                 st.SiteName COLLATE SQL_Latin1_General_CP1_CI_AS AS SiteName,
+                r.RunID,
                 r.RunName,
                 r.RunDate,
                 COALESCE(sp.SampleTypeCode, p.SampleTypeCode) AS SampleTypeCode, -- Select from Sample first, fallback to Run
@@ -48,14 +54,24 @@ class Repository:
                 AND lt.LabTestID = ?
             """
             cursor.execute(query, sample_id, lab_test_id)
-            result = cursor.fetchone()
+            row = cursor.fetchone()
+            if row is None:
+                cursor.close()
+                return
+
+            column_names = [
+                column[0] for column in cursor.description
+            ]  # Extract column names
             cursor.close()
-            return result
+            result_dict = dict(zip(column_names, row))  # Map column names to values
+            self._metadata_cache[(sample_id, lab_test_id)] = result_dict
+            return result_dict
         except Exception as e:
-            HilltopHost.LogError(f"Error occurred: {str(e)}")
-            return None
+            HilltopHost.LogError(f"sampler_qa_checks_demo - Error occurred: {str(e)}")
 
     def get_measurement_by_lab_test_id(self, lab_test_id):
+        if lab_test_id in self._measurement_cache:
+            return self._measurement_cache[lab_test_id]
         try:
             cursor = self.connection.cursor()
             query = """
@@ -75,9 +91,16 @@ class Repository:
                 lt.LabTestID = ?
                     """
             cursor.execute(query, lab_test_id)
-            result = cursor.fetchone()
+            row = cursor.fetchone()
+            if row is None:
+                cursor.close()
+                return
+            column_names = [
+                column[0] for column in cursor.description
+            ]  # Extract column names
             cursor.close()
-            return result
+            result_dict = dict(zip(column_names, row))  # Map column names to values
+            self._measurement_cache[lab_test_id] = result_dict
+            return result_dict
         except Exception as e:
-            HilltopHost.LogError(f"Error occurred: {str(e)}")
-            return None
+            HilltopHost.LogError(f"sampler_qa_checks_demo - Error occurred: {str(e)}")
