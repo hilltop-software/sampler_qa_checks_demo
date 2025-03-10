@@ -1,7 +1,6 @@
 from typing import List
 from decimal import Decimal
 from datetime import datetime, timedelta
-import json
 
 import HilltopHost
 import Hilltop

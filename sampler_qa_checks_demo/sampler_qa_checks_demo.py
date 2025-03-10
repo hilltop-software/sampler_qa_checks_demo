@@ -63,12 +63,8 @@ class SamplerQAChecksPluginDemo:
                                     self.save_qa_checks(qa_checks)
             HilltopHost.LogInfo(f"sampler_qa_checks_demo - checks finished")
         except Exception as e:
-            # tb = traceback.extract_tb(e.__traceback__)
             HilltopHost.LogError(f"sampler_qa_checks_demo - error occurred: {e}: {traceback.format_exc()}")
             
-            # for filename, line, func, text in tb:
-            #     HilltopHost.LogError(f"sampler_qa_checks_demo - {filename}:{line}")
-
     def save_qa_checks(self, qa_checks):
         if qa_checks is None:
             return
