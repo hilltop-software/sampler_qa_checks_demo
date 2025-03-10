@@ -3,6 +3,7 @@ from .checks.i_check import ICheck
 from .check_registry import CheckRegistry
 from .repository import Repository
 
+
 class CheckFactory:
     """
     Factory that creates check instances based on configuration in CheckRegistry.

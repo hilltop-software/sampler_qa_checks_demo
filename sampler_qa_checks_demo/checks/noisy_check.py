@@ -5,18 +5,19 @@ from typing import List
 from .i_check import ICheck
 from HilltopHost.Sampler import QACheck, QACheckSeverity
 
+
 class NoisyCheck(ICheck):
     """
     An simple implementation of the ICheck interface that randomly saves a QA check for samples.
-    
+
     And it'll do it over and over again for the same sample, because it's noisy.
     """
     def perform_checks(self, run_id, context) -> List[QACheck]:
 
         x = random.random()
         if x > 0.5:
-            return # 50/50 chance of not adding a QA check
-                
+            return  # 50/50 chance of not adding a QA check
+
         qa_check = QACheck()
         qa_check.Title = f"Noisy check for {context.SampleID} at {datetime.now().strftime('%y%m%d.%H%M%S.%f')[:17]}"
         qa_check.RunID = run_id
