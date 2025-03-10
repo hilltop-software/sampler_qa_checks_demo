@@ -28,7 +28,8 @@ class PercentileCheck(ICheck):
             "min_data_points", 20
         )  # default to minimum 20 data points
         HilltopHost.LogInfo(
-            f"sampler_qa_checks_demo - PercentileCheck is using a history limit of {self.period_years} years and {self.min_data_points} data points"
+            f"sampler_qa_checks_demo - PercentileCheck is using a history limit of {self.period_years} years \
+                and {self.min_data_points} data points"
         )
         # if we're not disabled then connect to the Hilltop data file
         data_file = self.config.get("data_file")
@@ -52,7 +53,7 @@ class PercentileCheck(ICheck):
     def perform_checks(self, run_id, context) -> List[QACheck]:
         if self.has_check_result(context, "percentile_check"):
             return
-        if context.Result is None or context.Result.ResultValue is "":
+        if context.Result is None or context.Result.ResultValue == "":
             return
         if self.dfile1 is None:
             return
@@ -88,7 +89,8 @@ class PercentileCheck(ICheck):
         measurement = metadata["MeasurementName"]
         site = metadata["SiteName"]
 
-        # HilltopHost.LogInfo(f"sampler_qa_checks_demo - Searching {measurement} history of {site} from {start_date} to {end_date}")
+        # HilltopHost.LogInfo(f"sampler_qa_checks_demo - Searching {measurement} history of {site} \
+        # from {start_date} to {end_date}")
         s1 = Hilltop.GetData(self.dfile1, site, measurement, start_date, end_date)
 
         if s1.size < self.min_data_points:

@@ -1,7 +1,7 @@
 from typing import List
 import HilltopHost
 from HilltopHost.Sampler import QACheck
-from .. import utils
+
 
 class ICheck:
     """
@@ -33,7 +33,7 @@ class ICheck:
 
         if len(context.QAChecks) == 0:
             return False
-        
+
         for check in context.QAChecks:
             if check.Label == label:
                 return True

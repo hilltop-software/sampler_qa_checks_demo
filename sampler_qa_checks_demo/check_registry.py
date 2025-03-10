@@ -9,6 +9,7 @@ from .checks.outside_range_check import OutsideRangeCheck
 from .checks.percentile_check import PercentileCheck
 from .checks.threshold_check import ThresholdCheck
 
+
 class CheckRegistry:
     """
     A registry that holds arrays of check classes grouped by their level:
