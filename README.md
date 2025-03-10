@@ -16,7 +16,7 @@ For more information, read the Hilltop guide for developing Hilltop plugins.
 - The latest database migration scripts for QA checks must be run.
 - The `Hilltop` Python module dependency must be installed,
 
-Both of these are available for download from 
+Both of these are available for download from the [beta release page](https://www.hilltop.co.nz/docs/guides/scripting-and-development/Plugins/beta/).
 
 ## Package installation
 
