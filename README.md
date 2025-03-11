@@ -20,7 +20,7 @@ Both of these are available for download from the [beta release page](https://ww
 
 
 > [!NOTE]
-> This demonstration plugin code expects a Hilltop installation with the Sampler tables in the main metadata database (`Sampler=1`) and database style **3** (Sites, Measurements, and DataSources tables).
+> This demonstration plugin code expects a Hilltop installation with the Sampler tables in the main metadata database (`HasSampler=1`) and database style **3** (Sites, Measurements, and DataSources tables).
 >
 > If you have a separate database for Sampler tables, or a different database style, you will need to modify for your environment.
 
