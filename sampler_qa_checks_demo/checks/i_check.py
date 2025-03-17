@@ -31,11 +31,11 @@ class ICheck:
     def perform_checks(self, run_id : int, context) -> List[QACheck]:
         """
         Perform checks on the given context (run, sample, or test) and return a list of QA checks.
-        
+
         Args:
             run_id: The ID of the run
             context: The object to check (run, sample, or test)
-            
+
         Returns:
             A list of QACheck objects, or None if no checks were triggered
         """

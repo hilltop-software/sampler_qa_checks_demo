@@ -67,7 +67,7 @@ class PercentileCheck(ICheck):
         if self.dfile1 is not None:
             try:
                 Hilltop.Disconnect(self.dfile1)
-            except:
+            except Exception:
                 pass  # Suppress errors during cleanup
 
     def perform_checks(self, run_id, context) -> List[QACheck]:
@@ -106,7 +106,7 @@ class PercentileCheck(ICheck):
             result (Decimal): The numeric result of the test to evaluate.
 
         Returns:
-            List[QACheck] or None: A single QACheck if the result is outside the configured percentile thresholds, otherwise None.
+            List[QACheck] or None: A single QACheck if the result is outside the percentile thresholds, otherwise None.
         """
         # get the last x years of data based on the configuration
         # this ignores leap years
@@ -200,7 +200,9 @@ class PercentileCheck(ICheck):
             qa_check.Title = f"{params.key.title()} percentile breach: {params.measurement}"
             qa_check.Severity = params.severity
             qa_check.Details = f"""{params.measurement} is outside of the configured {params.key} percentiles
-{self.data_file} has {params.size} data points for {params.measurement} at {params.site} from {params.start_date} to {params.end_date}
+{self.data_file} has {params.size} data points for {params.measurement} at {params.site}
+from {params.start_date} to {params.end_date}
+
 {params.key} percentile limits: {lower_ordinal} and {upper_ordinal}
 {lower_ordinal} percentile: {percentile_lower}
 {upper_ordinal} percentile: {percentile_upper}

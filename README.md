@@ -248,6 +248,38 @@ if self.has_check_result(context, "outside_range_check"):
     return
 ```
 
+## Flake8
+
+Configured in `.flake8`.
+
+Install Flake8:
+
+```powershell
+C:\Hilltop\Libs\python.exe -m pip install flake8
+```
+
+Run:
+
+```powershell
+C:\Hilltop\Libs\python.exe -m flake8 .
+```
+
+## pytest
+
+There is just a single example 'hello world' `pytest` test to demonstrate configuration.
+
+Install pytest:
+
+```powershell
+C:\Hilltop\Libs\python.exe -m pip install pytest
+```
+
+Run:
+
+```powershell
+C:\Hilltop\Libs\python.exe -m pytest
+```
+
 ## Contributing
 
 If you would like access to this repository for reporting issues or creating pull requests please email Hilltop support.

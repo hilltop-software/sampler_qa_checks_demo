@@ -23,9 +23,9 @@ class Repository:
                     r.RunID,
                     r.RunName,
                     r.RunDate,
-                    COALESCE(sp.SampleTypeCode, p.SampleTypeCode) AS SampleTypeCode, -- Select from Sample first, fallback to Run
-                    COALESCE(sp.ProjectID, p.ProjectID) AS ProjectID, -- Select from Sample first, fallback to Run
-                    COALESCE(sp.ProjectName, p.ProjectName) AS ProjectName, -- Select from Sample first, fallback to Run
+                    COALESCE(sp.SampleTypeCode, p.SampleTypeCode) AS SampleTypeCode,
+                    COALESCE(sp.ProjectID, p.ProjectID) AS ProjectID,
+                    COALESCE(sp.ProjectName, p.ProjectName) AS ProjectName,
                     smp.SampleInfo,
                     x.testElement.query('.') AS TestInfo, -- Include the full XML of the test element
                     x.testElement.value('@ID', 'INT') as TestID,
