@@ -2,7 +2,7 @@ import xml.etree.ElementTree as ET
 import json
 
 
-def dump(obj):
+def dump(obj) -> str:
     if isinstance(obj, dict):
         return json.dumps(obj)
     properties = []
@@ -12,18 +12,18 @@ def dump(obj):
     return json.dumps(properties)
 
 
-def get_parameter_value_from_test_info(xml, parameter):
+def get_parameter_value_from_test_info(xml: str, parameter : str) -> str:
     root = ET.fromstring(xml)
     for param in root.findall(".//Parameter"):
         if param.get("Name") == parameter:
             return param.get("Value")
 
 
-def truncate(x, length=50):
+def truncate(x : str, length=50) -> str:
     return x[:length-3] + '...' if len(x) > length else x
 
 
-def ordinal(n):
+def ordinal(n: int) -> str:
     if 11 <= (n % 100) <= 13:
         suffix = "th"
     else:

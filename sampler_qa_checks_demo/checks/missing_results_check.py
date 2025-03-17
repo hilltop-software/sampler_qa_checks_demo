@@ -35,7 +35,7 @@ class MissingResultsCheck(ICheck):
             details = f"Sample ID {context.SampleID} has only some results back, but sample time is {sample_time} \
                 and older than {self.age_limit} days"
             qa_check = QACheck()
-            qa_check.Title = f"Sample {context.SampleID} is missing results"
+            qa_check.Title = f"Missing results for sample {context.SampleID}"
             qa_check.RunID = run_id
             qa_check.SampleID = context.SampleID
             qa_check.Severity = QACheckSeverity.Warning

@@ -1,6 +1,6 @@
+# uses a trusted connection to connect to the database
 db_server: localhost # database server host name
 db_name: Hilltop # database name
-# uses trusted comnnection to connect to the database
 save_qachecks_to_database: false # save the QA checks to the database
 TestCheck:
   disabled: true # disable the check
