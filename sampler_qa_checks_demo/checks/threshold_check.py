@@ -98,6 +98,8 @@ class ThresholdCheck(ICheck):
         qa_check.Label = "threshold_check"
         qa_check.Title = f"Exceedance: {measurement}"
         qa_check.Severity = severity
-        qa_check.Details = f"Sample {context.SampleID} {measurement} result {result} \
-            exceeds the {severity.name} threshold of {threshold}"
+        qa_check.Details = (
+            f"Sample {context.SampleID} {measurement} result {result} "
+            f"exceeds the {severity.name} threshold of {threshold}"
+        )
         return [qa_check]

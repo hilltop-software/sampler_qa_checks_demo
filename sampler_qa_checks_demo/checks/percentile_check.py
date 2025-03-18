@@ -42,8 +42,10 @@ class PercentileCheck(ICheck):
             "min_data_points", 20
         )  # default to minimum 20 data points
         HilltopHost.LogInfo(
-            f"sampler_qa_checks_demo - PercentileCheck is using a history limit of {self.period_years} years \
-                and {self.min_data_points} data points"
+            (
+                f"sampler_qa_checks_demo - PercentileCheck is using a history limit of {self.period_years} years "
+                f"and {self.min_data_points} data points"
+            )
         )
         # if we're not disabled then connect to the Hilltop data file
         data_file = self.config.get("data_file")
@@ -197,10 +199,12 @@ class PercentileCheck(ICheck):
         percentile_lower = params.percentiles[lower - 1]
         percentile_upper = params.percentiles[upper - 1]
         if params.result < percentile_lower or params.result > percentile_upper:
-            qa_check.Title = f"{params.key.title()} percentile breach: {params.measurement}"
+            qa_check.Title = (
+                f"{params.key.title()} percentile breach: {params.measurement}"
+            )
             qa_check.Severity = params.severity
             qa_check.Details = f"""{params.measurement} is outside of the configured {params.key} percentiles
-{self.data_file} has {params.size} data points for {params.measurement} at {params.site}
+{self.data_file} has {params.size} data points for {params.measurement} at {params.site} \
 from {params.start_date} to {params.end_date}
 
 {params.key} percentile limits: {lower_ordinal} and {upper_ordinal}

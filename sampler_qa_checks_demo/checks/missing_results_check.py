@@ -15,7 +15,9 @@ class MissingResultsCheck(ICheck):
         if self.disabled:
             return
         self.age_limit = self.config.get("age_limit", 3)  # default to 3 days ago
-        HilltopHost.LogInfo(f"sampler_qa_checks_demo - MissingResultsCheck is using an age limit of {self.age_limit} days")
+        HilltopHost.LogInfo(
+            f"sampler_qa_checks_demo - MissingResultsCheck is using an age limit of {self.age_limit} days"
+        )
 
     def perform_checks(self, run_id, context) -> List[QACheck]:
         if self.has_check_result(context, "missing_results_check"):
@@ -32,8 +34,10 @@ class MissingResultsCheck(ICheck):
         n_days_ago = today - timedelta(days=self.age_limit)
         sample_time = datetime.fromisoformat(context.SampleTime)
         if sample_time < n_days_ago:
-            details = f"Sample ID {context.SampleID} has only some results back, but sample time is {sample_time} \
-                and older than {self.age_limit} days"
+            details = (
+                f"Sample ID {context.SampleID} has only some results back,"
+                f"but sample time is {sample_time} and older than {self.age_limit} days"
+            )
             qa_check = QACheck()
             qa_check.Title = f"Missing results for sample {context.SampleID}"
             qa_check.RunID = run_id

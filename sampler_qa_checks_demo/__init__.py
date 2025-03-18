@@ -1,6 +1,7 @@
 from typing import List
 import pyodbc
 import traceback
+import time
 import HilltopHost
 from .checks.i_check import ICheck
 from .config_loader import ConfigLoader
@@ -15,6 +16,7 @@ class SamplerQAChecksPluginDemo:
     """
 
     def sampler_qa_checks(self, payload: HilltopHost.SamplerQAChecksPayload) -> None:
+        start_time = time.time()
         HilltopHost.LogInfo("sampler_qa_checks_demo - checks started")
         try:
 
@@ -43,7 +45,9 @@ class SamplerQAChecksPluginDemo:
                     self.check_sample(sample_checks, run, sample)
                     for test in sample.Tests:
                         self.check_test(test_checks, run, test)
-            HilltopHost.LogInfo("sampler_qa_checks_demo - checks finished")
+            HilltopHost.LogInfo(
+                f"sampler_qa_checks_demo - checks finished in {time.time() - start_time:.2f} seconds"
+            )
         except Exception as e:
             HilltopHost.LogError(
                 f"sampler_qa_checks_demo - error occurred: {e}: {traceback.format_exc()}"
