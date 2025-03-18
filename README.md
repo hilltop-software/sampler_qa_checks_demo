@@ -18,6 +18,12 @@ For more information, read the Hilltop guide for developing Hilltop plugins.
 
 Both of these are available for download from the [beta release page](https://www.hilltop.co.nz/docs/guides/scripting-and-development/Plugins/beta/).
 
+
+> [!NOTE]
+> This demonstration plugin code expects a Hilltop installation with the Sampler tables in the main metadata database (`HasSampler=1`) and database style **3** (Sites, Measurements, and DataSources tables).
+>
+> If you have a separate database for Sampler tables, or a different database style, you will need to modify for your environment.
+
 ## Package installation
 
 Refer to [Python package management with PIP](https://www.hilltop.co.nz/docs/guides/scripting-and-development/Plugins/#python-package-management-with-pip) in the Hilltop documentation for general instructions on package management for Hilltop plugins.
@@ -240,6 +246,38 @@ Run, sample, or test objects provided in the payload include a `QAChecks` attrib
 ```python
 if self.has_check_result(context, "outside_range_check"):
     return
+```
+
+## Flake8
+
+Configured in `.flake8`.
+
+Install Flake8:
+
+```powershell
+C:\Hilltop\Libs\python.exe -m pip install flake8
+```
+
+Run:
+
+```powershell
+C:\Hilltop\Libs\python.exe -m flake8 .
+```
+
+## pytest
+
+There is just a single example 'hello world' `pytest` test to demonstrate configuration.
+
+Install pytest:
+
+```powershell
+C:\Hilltop\Libs\python.exe -m pip install pytest
+```
+
+Run:
+
+```powershell
+C:\Hilltop\Libs\python.exe -m pytest
 ```
 
 ## Contributing

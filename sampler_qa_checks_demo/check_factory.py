@@ -1,3 +1,4 @@
+import pyodbc
 from typing import List
 from .checks.i_check import ICheck
 from .check_registry import CheckRegistry
@@ -11,7 +12,7 @@ class CheckFactory:
     The factory uses CheckRegistry to get all available checks for a level,
     then filters them by the names listed in the configuration.
     """
-    def __init__(self, config: dict, connection):
+    def __init__(self, config: dict, connection: pyodbc.Connection):
         self.config = config
         self.repository = Repository(connection)
 

@@ -29,13 +29,23 @@ class ThresholdCheck(ICheck):
             return
 
         result = Decimal(context.Result.ResultValue)
-        return self.check_result(run_id, context, measurement, result)
+        return self.evaluate_result_against_thresholds(run_id, context, measurement, result)
 
-    def check_result(self, run_id, context, measurement, result):
+    def evaluate_result_against_thresholds(self, run_id, context, measurement, result):
+        """
+        Args:
+            run_id: The identifier of the current run.
+            context: The context containing sample and result information.
+            measurement: The name of the measurement associated with thresholds.
+            result: The numeric result of the analysis.
+
+        Returns:
+            A list of threshold QA checks if any threshold is exceeded, otherwise None.
+        """
         thresholds = self.config[measurement]
 
         if "Critical" in thresholds and result > Decimal(thresholds["Critical"]):
-            return self.create_qa_check(
+            return self.build_qa_check(
                 run_id,
                 context,
                 measurement,
@@ -45,7 +55,7 @@ class ThresholdCheck(ICheck):
             )
 
         if "Warning" in thresholds and result > Decimal(thresholds["Warning"]):
-            return self.create_qa_check(
+            return self.build_qa_check(
                 run_id,
                 context,
                 measurement,
@@ -55,7 +65,7 @@ class ThresholdCheck(ICheck):
             )
 
         if "Information" in thresholds and result > Decimal(thresholds["Information"]):
-            return self.create_qa_check(
+            return self.build_qa_check(
                 run_id,
                 context,
                 measurement,
@@ -64,16 +74,32 @@ class ThresholdCheck(ICheck):
                 thresholds["Information"],
             )
 
-    def create_qa_check(
+    def build_qa_check(
         self, run_id, context, measurement, result, severity, threshold
     ):
+        """
+        Creates a QA check instance based on the specified threshold and severity.
+
+        Args:
+            run_id: Unique identifier for the current run.
+            context: Container for sample and lab result details.
+            measurement: Name of the measurement being evaluated.
+            result: Numeric result value.
+            severity: Severity level of the threshold exceedance.
+            threshold: Threshold value being tested against.
+
+        Returns:
+            A list containing the created QA check instance.
+        """
         qa_check = QACheck()
         qa_check.RunID = run_id
         qa_check.SampleID = context.SampleID
         qa_check.LabTestID = context.LabTestID
         qa_check.Label = "threshold_check"
-        qa_check.Title = f"{measurement[:39]} exceedance"
+        qa_check.Title = f"Exceedance: {measurement}"
         qa_check.Severity = severity
-        qa_check.Details = f"Sample {context.SampleID} {measurement} result {result} \
-            exceeds the {severity.name} threshold of {threshold}"
+        qa_check.Details = (
+            f"Sample {context.SampleID} {measurement} result {result} "
+            f"exceeds the {severity.name} threshold of {threshold}"
+        )
         return [qa_check]
