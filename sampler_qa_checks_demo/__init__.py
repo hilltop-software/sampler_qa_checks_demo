@@ -6,7 +6,7 @@ import HilltopHost
 from .checks.i_check import ICheck
 from .config_loader import ConfigLoader
 from .check_factory import CheckFactory
-from HilltopHost.Sampler import QACheck
+from HilltopHost.Sampler import *
 from . import utils
 
 
@@ -15,7 +15,7 @@ class SamplerQAChecksPluginDemo:
     A plugin that demonstrates how to perform QA checks on runs, samples, and tests.
     """
 
-    def sampler_qa_checks(self, payload: HilltopHost.SamplerQAChecksPayload) -> None:
+    def sampler_qa_checks(self, payload: HilltopHost.Sampler.QAChecksPayload) -> None:
         start_time = time.time()
         HilltopHost.LogInfo("sampler_qa_checks_demo - checks started")
         try:
@@ -53,7 +53,7 @@ class SamplerQAChecksPluginDemo:
                 f"sampler_qa_checks_demo - error occurred: {e}: {traceback.format_exc()}"
             )
 
-    def check_run(self, run_checks: List[ICheck], run: HilltopHost.QACheckRun) -> None:
+    def check_run(self, run_checks: List[ICheck], run: HilltopHost.Sampler.QACheckRun) -> None:
         for run_check in run_checks:
             if run_check.disabled:
                 continue
@@ -63,8 +63,8 @@ class SamplerQAChecksPluginDemo:
     def check_sample(
         self,
         sample_checks: List[ICheck],
-        run: HilltopHost.QACheckRun,
-        sample: HilltopHost.QACheckSample,
+        run: HilltopHost.Sampler.QACheckRun,
+        sample: HilltopHost.Sampler.QACheckSample,
     ) -> None:
         for sample_check in sample_checks:
             if sample_check.disabled:
@@ -75,8 +75,8 @@ class SamplerQAChecksPluginDemo:
     def check_test(
         self,
         test_checks: List[ICheck],
-        run: HilltopHost.QACheckRun,
-        test: HilltopHost.QACheckLabTest,
+        run: HilltopHost.Sampler.QACheckRun,
+        test: HilltopHost.Sampler.QACheckLabTest,
     ) -> None:
         if test.IsTestSet:
             for subtest in test.Tests:
