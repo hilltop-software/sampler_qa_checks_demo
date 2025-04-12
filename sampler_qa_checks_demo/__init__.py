@@ -6,7 +6,7 @@ import HilltopHost
 from .checks.i_check import ICheck
 from .config_loader import ConfigLoader
 from .check_factory import CheckFactory
-from HilltopHost.Sampler import *
+from HilltopHost.Sampler import QACheck
 from . import utils
 
 
