@@ -105,7 +105,7 @@ The connection is established using `Trusted_Connection=yes;` so no username or 
 
 ## Getting started
 
-The QA checks feature looks for runs that  the runs that are not cancelled or closed, e.g. they don't have the status the status `RunStatus::CANCELLED`, `RunStatus::NORTHLAND_CANCELLED`, `RunStatus::CLOSED`. You can either use an existing test database with lab results or add your own lab results using the result delivery plugin entry point and a result delivery plugin.
+The QA checks feature looks for runs that are not cancelled or closed, e.g., they don't have the status `RunStatus::CANCELLED`, `RunStatus::NORTHLAND_CANCELLED`, or `RunStatus::CLOSED`. You can either use an existing test database with lab results or add example lab results using the result delivery plugin entry point and a result delivery plugin.
 
 ### Saving demo QA checks to the database
 
