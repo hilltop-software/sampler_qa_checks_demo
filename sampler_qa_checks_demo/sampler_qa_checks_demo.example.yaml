@@ -2,7 +2,7 @@
 db_server: localhost # database server host name
 db_name: Hilltop # database name
 save_qachecks_to_database: false # save the QA checks to the database
-TestCheck:
+DemoCheck:
   disabled: true # disable the check
 RunNameCheck: # simple run-level check that checks if the run name is too long
   name_max_length: 100

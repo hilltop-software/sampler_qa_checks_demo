@@ -2,7 +2,7 @@ from typing import List, Dict, Type
 from .checks.i_check import ICheck
 
 from .checks.run_name_check import RunNameCheck
-from .checks.test_check import TestCheck
+from .checks.demo_check import DemoCheck
 from .checks.missing_results_check import MissingResultsCheck
 from .checks.noisy_check import NoisyCheck
 from .checks.outside_range_check import OutsideRangeCheck
@@ -22,7 +22,7 @@ class CheckRegistry:
     """
 
     _registry: Dict[str, List[Type[ICheck]]] = {
-        "run_checks": [RunNameCheck, TestCheck],
+        "run_checks": [RunNameCheck, DemoCheck],
         "sample_checks": [MissingResultsCheck, NoisyCheck],
         "test_checks": [OutsideRangeCheck, PercentileCheck, ThresholdCheck],
     }

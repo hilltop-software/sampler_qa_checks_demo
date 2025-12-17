@@ -12,5 +12,12 @@ dependencies = [
     "Hilltop>=7.0",
 ]
 
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-mock>=3.11.0",
+    "pytest-cov>=4.1.0",
+]
+
 [project.entry-points.'hilltop.sampler_qa_checks']
 "sampler_qa_checks_demo" = 'sampler_qa_checks_demo:SamplerQAChecksPluginDemo'
