@@ -19,7 +19,7 @@ class NoisyCheck(ICheck):
             return  # 50/50 chance of not adding a QA check
 
         qa_check = QACheck()
-        qa_check.Title = f"Noisy check for {context.SampleID} at {datetime.now().strftime('%y%m%d.%H%M%S.%f')[:17]}"
+        qa_check.Title = f"Noisy check for {context.SampleID} at {datetime.now().strftime('%y%m%d.%H%M%S.%f')}"
         qa_check.RunID = run_id
         qa_check.SampleID = context.SampleID
         qa_check.Severity = QACheckSeverity.Information

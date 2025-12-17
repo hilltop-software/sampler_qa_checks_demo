@@ -98,8 +98,8 @@ class SamplerQAChecksPluginDemo:
         for qa_check in qa_checks:
             if self.save:
                 qa_check.Title = qa_check.Title[
-                    :100
-                ]  # truncate title to 100 characters
+                    :50
+                ]  # truncate title to 50 characters
                 HilltopHost.Sampler.SaveQACheck(qa_check)
             else:
                 HilltopHost.LogInfo(utils.dump(qa_check))
