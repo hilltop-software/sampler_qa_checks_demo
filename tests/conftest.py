@@ -8,17 +8,17 @@ from datetime import datetime
 # Mock HilltopHost module before any imports
 if 'HilltopHost' not in sys.modules:
     mock_hilltop_host_module = MagicMock()
-    
+
     # Mock RunStatus enum
     mock_run_status = Mock()
     mock_run_status.SOME_RESULTS_BACK = 3
     mock_run_status.CANCELLED = 5
     mock_run_status.CLOSED = 6
     mock_hilltop_host_module.RunStatus = mock_run_status
-    
+
     # Mock Sampler submodule
     mock_sampler = MagicMock()
-    
+
     # Mock QACheckSeverity enum
     mock_severity = Mock()
     mock_severity.OK = 0
@@ -26,7 +26,7 @@ if 'HilltopHost' not in sys.modules:
     mock_severity.Warning = 2
     mock_severity.Critical = 3
     mock_sampler.QACheckSeverity = mock_severity
-    
+
     # Mock QACheck class
     class MockQACheck:
         def __init__(self):
@@ -37,23 +37,23 @@ if 'HilltopHost' not in sys.modules:
             self.Severity = 0
             self.Details = ""
             self.Label = ""
-    
+
     mock_sampler.QACheck = MockQACheck
     mock_sampler.SaveQACheck = Mock()
-    
+
     mock_hilltop_host_module.Sampler = mock_sampler
-    
+
     # Mock System submodule
     mock_system = MagicMock()
     mock_system.GetConfigSection = Mock(return_value=None)
     mock_hilltop_host_module.System = mock_system
-    
+
     # Mock logging functions
     mock_hilltop_host_module.LogInfo = Mock()
     mock_hilltop_host_module.LogWarning = Mock()
     mock_hilltop_host_module.LogError = Mock()
     mock_hilltop_host_module.LogDebug = Mock()
-    
+
     sys.modules['HilltopHost'] = mock_hilltop_host_module
     sys.modules['HilltopHost.Sampler'] = mock_sampler
     sys.modules['HilltopHost.System'] = mock_system
@@ -69,19 +69,19 @@ def mock_hilltop_host(monkeypatch):
     mock_log_warning = Mock()
     mock_log_error = Mock()
     mock_log_debug = Mock()
-    
+
     monkeypatch.setattr("HilltopHost.LogInfo", mock_log_info)
     monkeypatch.setattr("HilltopHost.LogWarning", mock_log_warning)
     monkeypatch.setattr("HilltopHost.LogError", mock_log_error)
     monkeypatch.setattr("HilltopHost.LogDebug", mock_log_debug)
-    
+
     # Mock RunStatus enum
     mock_run_status = Mock()
     mock_run_status.SOME_RESULTS_BACK = 3
     mock_run_status.CANCELLED = 5
     mock_run_status.CLOSED = 6
     monkeypatch.setattr("HilltopHost.RunStatus", mock_run_status)
-    
+
     # Mock QACheckSeverity enum
     mock_severity = Mock()
     mock_severity.OK = 0
@@ -89,11 +89,11 @@ def mock_hilltop_host(monkeypatch):
     mock_severity.Warning = 2
     mock_severity.Critical = 3
     monkeypatch.setattr("HilltopHost.Sampler.QACheckSeverity", mock_severity)
-    
+
     # Mock SaveQACheck function
     mock_save_qa_check = Mock()
     monkeypatch.setattr("HilltopHost.Sampler.SaveQACheck", mock_save_qa_check)
-    
+
     return {
         "LogInfo": mock_log_info,
         "LogWarning": mock_log_warning,
@@ -151,12 +151,12 @@ def mock_qa_check_lab_test():
         test.IsTestSet = kwargs.get("IsTestSet", False)
         test.Tests = kwargs.get("Tests", [])
         test.QAChecks = kwargs.get("QAChecks", [])
-        
+
         # Mock Result object
         result = Mock()
         result.TestValue = kwargs.get("TestValue", "7.5")
         test.Result = result
-        
+
         return test
     return _create_lab_test
 
@@ -265,25 +265,25 @@ def sample_config_percentile():
 def mock_hilltop_module(monkeypatch):
     """Mock the Hilltop Python module."""
     mock_hilltop = Mock()
-    
+
     # Mock Connect/Disconnect
     mock_dfile = Mock()
     mock_hilltop.Connect = Mock(return_value=mock_dfile)
     mock_hilltop.Disconnect = Mock()
-    
+
     # Mock GetData
     mock_series = Mock()
     mock_series.Values = []
     mock_hilltop.GetData = Mock(return_value=mock_series)
-    
+
     # Mock PDist
     mock_hilltop.PDist = Mock(return_value=([], []))
-    
+
     monkeypatch.setattr("Hilltop.Connect", mock_hilltop.Connect)
     monkeypatch.setattr("Hilltop.Disconnect", mock_hilltop.Disconnect)
     monkeypatch.setattr("Hilltop.GetData", mock_hilltop.GetData)
     monkeypatch.setattr("Hilltop.PDist", mock_hilltop.PDist)
-    
+
     return mock_hilltop
 
 
@@ -295,12 +295,12 @@ def freeze_time(monkeypatch):
             @staticmethod
             def now():
                 return frozen_datetime
-            
+
             @staticmethod
             def fromisoformat(date_string):
                 return datetime.fromisoformat(date_string)
-        
+
         monkeypatch.setattr("datetime.datetime", FrozenDateTime)
         return frozen_datetime
-    
+
     return _freeze
