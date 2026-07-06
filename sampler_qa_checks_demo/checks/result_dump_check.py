@@ -23,9 +23,9 @@ class ResultDumpCheck(ICheck):
             return
 
         measurement = metadata["MeasurementName"]
-        
+
         dump = utils.dump(context.Result)
-        
+
         HilltopHost.LogInfo(
             f"sampler_qa_checks_demo - Result dump check for lab test {context.LabTestID} ({measurement}): {dump}"
         )
@@ -39,7 +39,7 @@ class ResultDumpCheck(ICheck):
         qa_check.Label = "result_dump_check"
         qa_check.Title = f"Result dump check: {measurement}"
         qa_check.Severity = QACheckSeverity.Information
-        qa_check.Details = f"""{measurement} 
+        qa_check.Details = f"""{measurement}
 Result: {dump}
         """
         return [qa_check]

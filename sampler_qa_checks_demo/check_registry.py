@@ -10,6 +10,7 @@ from .checks.percentile_check import PercentileCheck
 from .checks.threshold_check import ThresholdCheck
 from .checks.result_dump_check import ResultDumpCheck
 
+
 class CheckRegistry:
     """
     A registry that holds arrays of check classes grouped by their level:
