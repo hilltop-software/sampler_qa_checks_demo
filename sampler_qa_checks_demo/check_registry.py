@@ -8,7 +8,7 @@ from .checks.noisy_check import NoisyCheck
 from .checks.outside_range_check import OutsideRangeCheck
 from .checks.percentile_check import PercentileCheck
 from .checks.threshold_check import ThresholdCheck
-
+from .checks.result_dump_check import ResultDumpCheck
 
 class CheckRegistry:
     """
@@ -24,7 +24,7 @@ class CheckRegistry:
     _registry: Dict[str, List[Type[ICheck]]] = {
         "run_checks": [RunNameCheck, TestCheck],
         "sample_checks": [MissingResultsCheck, NoisyCheck],
-        "test_checks": [OutsideRangeCheck, PercentileCheck, ThresholdCheck],
+        "test_checks": [OutsideRangeCheck, PercentileCheck, ThresholdCheck, ResultDumpCheck],
     }
 
     @classmethod

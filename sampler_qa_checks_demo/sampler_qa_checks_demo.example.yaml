@@ -28,3 +28,5 @@ ThresholdCheck: # test-level check that checks a result is over specified thresh
     Information: 1.0
     Warning: 3.0
     Critical: 10.0
+ResultDumpCheck:
+  disabled: true # disable the check
