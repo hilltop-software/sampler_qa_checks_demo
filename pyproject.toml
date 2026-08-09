@@ -9,7 +9,18 @@ version = "1.0"
 dependencies = [
     "pyyaml>=6.0",
     "pyodbc>=5.2",
+]
+
+[project.optional-dependencies]
+hilltop = [
     "Hilltop>=7.0",
+]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-mock>=3.11.0",
+    "pytest-cov>=4.1.0",
+    "pyodbc>=5.2",
+    "pyyaml>=6.0",
 ]
 
 [project.entry-points.'hilltop.sampler_qa_checks']

@@ -206,12 +206,12 @@ PercentileCheck: # test-level check that checks a result is within a certain per
 
 These checks are for plugin testing purposes.
 
-### TestCheck
+### DemoCheck
 
 This will add a QA check record to every run. Once only.
 
 ```yaml
-TestCheck:
+DemoCheck:
   disabled: false
 ```
 
